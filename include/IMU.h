@@ -1,24 +1,28 @@
 #pragma once
 
-#include "Arduino.h"
-#include "MPU9250.h"
-#include "Wire.h"
+#include <Adafruit_ICM20X.h>
+#include <Adafruit_ICM20948.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
 
-#define ALPHA_PITCH .95
-#define ALPHA_ROLL .95
-#define ALPHA_YAW .95
-
-class IMU
-{
-private:
-    MPU9250 mpu;
-    float pitch, pitch_previous, roll, roll_previous, yaw, yaw_previous;
-
+class IMU {
 public:
     IMU();
     bool initialize();
-    void calibrate();
-    bool update(float deltaTime);
     float getPitch();
     float getYaw();
+    bool update(float deltaTime);
+    void calibrate();
+
+private:
+    Adafruit_ICM20948 icm;
+    float pitch;
+    float yaw;
+    float roll;
+    float pitch_previous;
+    float roll_previous;
+    float yaw_previous;
+
+    const float ALPHA_PITCH = 0.98; // Tuning parameter for complementary filter
+    const float ALPHA_YAW = 0.98;   // Tuning parameter for complementary filter
 };

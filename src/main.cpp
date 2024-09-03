@@ -23,6 +23,12 @@
 #define motorLeftPWM 5
 #define motorRightPWM 6
 
+#define ICM_CS 10
+#define ICM_SCK 13
+#define ICM_MISO 12
+#define ICM_MOSI 11
+
+
 // float speed_setpoint;  // TODO zet controle op basis van pitch om in controle op basis van snelheid
 float speed_setpoint;
 float pitch_setpoint;
