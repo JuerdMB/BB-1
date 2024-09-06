@@ -47,34 +47,37 @@ bool IRS::update()
     // Do calculations to compute Transformation and Rotation vectors, and Quaternion from rawAccData, rawGyrData, rawMagData
     // This is where the kalman filter would come in, or I could use a simpler complementary filter
 
-    current_pitch = computePitchComplementaryFilter();
+    double current_pitch = computePitchComplementaryFilter();
 
     // Update pose and orientation TEMP
     pose.position.x = 0.0;
     pose.position.y = 0.0;
     pose.position.z = 0.0;
-
     pose.orientation.x = 0.0;
     pose.orientation.y = 0.0;
     pose.orientation.z = 0.0;
-    pose.orientation.w = 1.0;
+    pose.orientation.w = 0.0;
 
+    // If all is succesful, return true
+    return true;
+}
+
+bool IRS::runChecks()
+{
     // TODO: Fill rotation through convenient functions
     // pose.orientation.setRPY(/*Roll*/ 0, /*Pitch*/ 0, /*Yaw*/ 0); // Insert current pitch into quaternion
-
-    // Publish pose message as stamped pose
-    geometry_msgs::PoseStamped poseMessage;
-    std_msgs::Header header; // Create header for pose
-    poseMessage.header = header;
-    poseMessage.pose = pose;
 
     // Save to history so we can do checks before overwritten
     // storePoseToHistory(pose);
 
     // Do calculations on pose history
     // runPoseChecks();
+}
 
-    // If all is succesful, return true
-    // if(){}
-    return true;
+const geometry_msgs::PoseStamped& IRS::getPose() const
+{
+    geometry_msgs::PoseStamped pose_msg;
+    pose_msg.pose=this->pose;
+    pose_msg.header.stamp = nodeHandle_->now();
+    return pose_msg;
 }
