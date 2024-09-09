@@ -62,22 +62,20 @@ bool IRS::update()
     sensors_event_t temp;
     icm.getEvent(&accel, &gyro, &temp, &mag);
 
+    // Calculate time interval since last measurement
+    uint32_t now = micros();
+    uint32_t dT = now - last_icm_update;
+    last_icm_update = now;
 
     // Debug printing for serial plotter
     printSensorDataString(&accel, &gyro, &temp, &mag);
 
     // Do calculations to compute Transformation and Rotation vectors, and Quaternion from rawAccData, rawGyrData, rawMagData
     // This is where the kalman filter would come in, or I could use a simpler complementary filter
-    pitch = computePitchComplementaryFilter(accel.acceleration.x, accel.acceleration.z);
+    computePitchComplementaryFilter(accel.acceleration.x, accel.acceleration.z, gyro.gyro.y, dT);
 
     // If all is succesful, return true
     return true;
-}
-
-double IRS::computePitchComplementaryFilter(float accx, float accz)
-{
-    double pitch = 0.0;
-    return pitch;
 }
 
 bool IRS::runChecks()
@@ -149,4 +147,16 @@ void IRS::printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_
     Serial.print(m->magnetic.y, 3);
     Serial.print("\t\tmagZ:");
     Serial.println(m->magnetic.z, 3);
+}
+
+double IRS::computePitchComplementaryFilter(float accx, float accz, float gyrY, uint32_t dT){
+    // Calculate pitch from accelerometers x and z, and yaw change from gyro_y. 
+    float pitch_accelerometers = atan2(accx, accz) * RAD_TO_DEG; 
+    float deltaPitch_gyros = gyrY * dT;
+
+    // Combine with complementary filter.
+    pitch = (pitch_previous + deltaPitch_gyros) * COMPLEMENTARY_FILTER_ALPHA_PITCH + pitch_accelerometers * (1. - COMPLEMENTARY_FILTER_ALPHA_PITCH);
+    pitch_previous = pitch;
+
+    return pitch;
 }
