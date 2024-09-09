@@ -7,46 +7,46 @@
  *   The class acts as a ROS node with namespace "IRS"
  */
 
-#include "ICM_20948.h"
+#include <Adafruit_ICM20X.h>
+#include <Adafruit_ICM20948.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
 #include <SimpleKalmanFilter.h>
-#include <ros.h>
-#include <geometry_msgs/Pose.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/PoseArray.h>
-#include <geometry_msgs/Quaternion.h>
-#include <geometry_msgs/QuaternionStamped.h>
-#include <std_msgs/Header.h>
+#include <Logger.h>
 
 #define NAMESPACE "IRS"
-#define AD0_VAL 1
 
-#define ICM_SDA_PORT 13
-#define ICM_SCK_PORT 12
+// ICM SPI ports
+#define ICM_CS 5
+#define ICM_SCK 18
+#define ICM_MISO 19
+#define ICM_MOSI 23
+
+extern Logger& logger;
 
 class IRS
 {
 public:
-    IRS(ros::NodeHandle *nh);
+    IRS();
     ~IRS();
 
     void initialize();
     bool update();
     bool runChecks();
 
-    const geometry_msgs::PoseStamped& getPose() const;
-
 private:
-    ros::NodeHandle *nodeHandle_;
-
     /* ICM-20948 sensor object and ports, to be defined upon startup */
-    ICM_20948_I2C myICM;
+    Adafruit_ICM20948 icm;
+    void printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_event_t *t, sensors_event_t *m);
 
     // Temporary pitch as double, and function to calculate it
-    double computePitchComplementaryFilter();
+    double computePitchComplementaryFilter(float accx, float accz);
+    double pitch; 
 
     // Variables to store robot pose information
-    geometry_msgs::Pose pose; // The robot's current transform relative to the static world frame, based on IRS
-    geometry_msgs::PoseArray poseHistory[10]; // Records past transforms, to check for anomalies
-    void storePoseToHistory(geometry_msgs::Pose pose);
+    // Pose
+    // void storePoseToHistory(pose);
 };
+
+void IRS_Task(void *pvParameters);
 

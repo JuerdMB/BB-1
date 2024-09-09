@@ -1,65 +1,83 @@
 #include "IRS.h"
 
-IRS::IRS(ros::NodeHandle *nh) : nodeHandle_(nh)
+IRS::IRS()
 {
+    // Empty constructor
+}
+
+IRS::~IRS()
+{
+    // Empty descructor
 }
 
 void IRS::initialize()
 {
     Wire.begin();
-    Wire.setClock(400000);
+    Wire.setClock(100000); // Standard I2C speed (can lower to 100kHz if needed)
 
     bool initialized = false;
+
     while (!initialized)
     {
-        myICM.begin(Wire, AD0_VAL);
 
-        Serial.print(F("Initialization of the sensor returned: "));
-        Serial.println(myICM.statusString());
-        if (myICM.status != ICM_20948_Stat_Ok)
-        {
-            Serial.println("Trying again...");
-            delay(500);
-        }
-        else
+        if (icm.begin_SPI(ICM_CS, ICM_SCK, ICM_MISO, ICM_MOSI))
         {
             initialized = true;
         }
+
+        else
+        {
+            logger.log(LOG_LEVEL_ERROR, "Failed to find ICM20948 chip, trying again");
+            delay(500);
+        }
+    }
+
+    logger.log(LOG_LEVEL_DEBUG, "ICM initialized");
+
+    icm.setAccelRange(ICM20948_ACCEL_RANGE_16_G);
+
+    switch (icm.getAccelRange())
+    {
+    case ICM20948_ACCEL_RANGE_2_G:
+        logger.log(LOG_LEVEL_INFO, "+-2G");
+        break;
+    case ICM20948_ACCEL_RANGE_4_G:
+        logger.log(LOG_LEVEL_INFO, "+-4G");
+        break;
+    case ICM20948_ACCEL_RANGE_8_G:
+        logger.log(LOG_LEVEL_INFO, "+-8G");
+        break;
+    case ICM20948_ACCEL_RANGE_16_G:
+        logger.log(LOG_LEVEL_INFO, "+-16G");
+        break;
     }
 }
 
 bool IRS::update()
 {
-    while (!myICM.dataReady())
-    {
-        // Wait and do nothing
-        Serial.println("ICM not ready, waiting for data");
-        delay(5);
-    }
+    //  /* Get a new normalized sensor event */
+    sensors_event_t accel;
+    sensors_event_t gyro;
+    sensors_event_t mag;
+    sensors_event_t temp;
+    icm.getEvent(&accel, &gyro, &temp, &mag);
 
-    // Update the ICM
-    myICM.getAGMT();
 
-    float rawAccData[3] = {myICM.accX(), myICM.accY(), myICM.accZ()};
-    float rawGyrData[3] = {myICM.gyrX(), myICM.gyrY(), myICM.gyrZ()};
-    float rawMagData[3] = {myICM.magX(), myICM.magY(), myICM.magZ()};
+    // Debug printing for serial plotter
+    printSensorDataString(&accel, &gyro, &temp, &mag);
 
     // Do calculations to compute Transformation and Rotation vectors, and Quaternion from rawAccData, rawGyrData, rawMagData
     // This is where the kalman filter would come in, or I could use a simpler complementary filter
-
-    double current_pitch = computePitchComplementaryFilter();
-
-    // Update pose and orientation TEMP
-    pose.position.x = 0.0;
-    pose.position.y = 0.0;
-    pose.position.z = 0.0;
-    pose.orientation.x = 0.0;
-    pose.orientation.y = 0.0;
-    pose.orientation.z = 0.0;
-    pose.orientation.w = 0.0;
+    pitch = computePitchComplementaryFilter(accel.acceleration.x, accel.acceleration.z);
 
     // If all is succesful, return true
     return true;
+}
+
+double IRS::computePitchComplementaryFilter(float accx, float accz)
+{
+    double pitch = 0.0;
+    return pitch;
 }
 
 bool IRS::runChecks()
@@ -72,12 +90,57 @@ bool IRS::runChecks()
 
     // Do calculations on pose history
     // runPoseChecks();
+
+    return true;
 }
 
-const geometry_msgs::PoseStamped& IRS::getPose() const
+void IRS_Task(void *pvParameters)
 {
-    geometry_msgs::PoseStamped pose_msg;
-    pose_msg.pose=this->pose;
-    pose_msg.header.stamp = nodeHandle_->now();
-    return pose_msg;
+    IRS *irs = static_cast<IRS *>(pvParameters); // Cast pvParameters to IRS pointer
+    irs->initialize();
+
+    while (true)
+    {
+        if (irs->update())
+        {
+
+            if (!irs->runChecks())
+            {
+                // If something really bad happened, fix it here
+            }
+        }
+
+        // irs->nodeHandle_->spinOnce();
+
+        // Delay for appropriate sampling rate
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
+}
+
+    // Debug printing for serial plotter
+void IRS::printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_event_t *t, sensors_event_t *m)
+{
+    // Print accelerometer data
+    Serial.print("\t\taccX: ");
+    Serial.print(a->acceleration.x, 6); // Print with 6 decimal places
+    Serial.print("\t\taccY: ");
+    Serial.print(a->acceleration.y, 6);
+    Serial.print("\t\taccZ: ");
+    Serial.print(a->acceleration.z, 6);
+
+    // Print gyroscope data
+    Serial.print("\t\tgyrX:");
+    Serial.print(g->gyro.x, 6);
+    Serial.print("\t\tgyrY:");
+    Serial.print(g->gyro.y, 6);
+    Serial.print("\t\tgyrZ:");
+    Serial.print(g->gyro.z, 6);
+
+    // Print magnetometer data
+    Serial.print("\t\tmagX:");
+    Serial.print(m->magnetic.x, 6);
+    Serial.print("\t\tmagY:");
+    Serial.print(m->magnetic.y, 6);
+    Serial.print("\t\tmagZ:");
+    Serial.println(m->magnetic.z, 6);
 }
