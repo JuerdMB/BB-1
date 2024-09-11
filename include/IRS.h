@@ -1,20 +1,17 @@
 #pragma once
 
-/*  This is the Inertial reference System of the robot.
- *   It provides access to filtered data from the sensors.
- *   It takes care of all error checking and filtering, which it abstracts away.
- *
- *   The class acts as a ROS node with namespace "IRS"
+/*
+ *  This is the Inertial reference System of the robot.
+ *  It provides access to filtered data from the sensors.
+ *  It takes care of all error checking and filtering, which it abstracts away.
  */
 
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
 #include <Adafruit_ICM20X.h>
 #include <Adafruit_ICM20948.h>
-#include <Adafruit_Sensor.h>
-#include <Wire.h>
-#include <SimpleKalmanFilter.h>
-#include <Logger.h>
-
-#define NAMESPACE "IRS"
+#include "Logger.h"
+#include "dataTypes.h"
 
 // ICM SPI ports
 #define ICM_CS 5
@@ -24,7 +21,7 @@
 
 #define COMPLEMENTARY_FILTER_ALPHA_PITCH .05
 
-extern Logger& logger;
+extern Logger &logger;
 
 class IRS
 {
@@ -33,25 +30,27 @@ public:
     ~IRS();
 
     void initialize();
+
     bool update();
+
     bool runChecks();
 
+    const orientation3* getOrientation();
+
 private:
-    /* ICM-20948 sensor object and ports, to be defined upon startup */
+    /* ICM-20948 sensor */
     Adafruit_ICM20948 icm;
-    void printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_event_t *t, sensors_event_t *m);
-
-    // Temporary pitch as double, and function to calculate it
-    double computePitchComplementaryFilter(float accx, float accz, float gyrY, uint32_t dT);
-    double pitch;
-    double pitch_previous;
-
     uint32_t last_icm_update;
 
-    // Variables to store robot pose information
-    // Pose
-    // void storePoseToHistory(pose);
+    /* Robot pose data */
+    orientation3 orientation;
+    orientation3 orientation_prev;
+    vec3 position;
+
+    void computeOrientation(const sensors_vec_t *acc, const sensors_vec_t *gyr, const sensors_vec_t *mag, uint32_t dT);
+
+    /* Helper functions*/
+    void printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_event_t *t, sensors_event_t *m);
 };
 
 void IRS_Task(void *pvParameters);
-

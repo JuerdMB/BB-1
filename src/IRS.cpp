@@ -70,12 +70,33 @@ bool IRS::update()
     // Debug printing for serial plotter
     printSensorDataString(&accel, &gyro, &temp, &mag);
 
-    // Do calculations to compute Transformation and Rotation vectors, and Quaternion from rawAccData, rawGyrData, rawMagData
+    // Compute orientation vector
     // This is where the kalman filter would come in, or I could use a simpler complementary filter
-    computePitchComplementaryFilter(accel.acceleration.x, accel.acceleration.z, gyro.gyro.y, dT);
+    computeOrientation(&accel.acceleration, &gyro.gyro, &mag.magnetic, dT);
 
     // If all is succesful, return true
     return true;
+}
+
+void IRS::computeOrientation(const sensors_vec_t *acc, const sensors_vec_t *gyr, const sensors_vec_t *mag, uint32_t dT)
+{
+    orientation3 orientation_change;
+
+    // Compute pitch in radians from accelerometers x and z
+    double pitch_accelerometers = atan2(acc->x, acc->z);
+
+    // Compute yaw rate from gyro_y.
+    float pitch_change = gyr->y * dT;
+
+    // Combine with complementary filter.
+    orientation.p = (orientation_prev.p + pitch_change) * COMPLEMENTARY_FILTER_ALPHA_PITCH + pitch_accelerometers * (1. - COMPLEMENTARY_FILTER_ALPHA_PITCH);
+
+    // Store current orientation for orientation rate in next cycle
+    orientation_prev = orientation;
+}
+
+const orientation3* IRS::getOrientation(){
+    return &orientation;
 }
 
 bool IRS::runChecks()
@@ -92,33 +113,10 @@ bool IRS::runChecks()
     return true;
 }
 
-void IRS_Task(void *pvParameters)
-{
-    IRS *irs = static_cast<IRS *>(pvParameters); // Cast pvParameters to IRS pointer
-    irs->initialize();
-
-    while (true)
-    {
-        if (irs->update())
-        {
-
-            if (!irs->runChecks())
-            {
-                // If something really bad happened, fix it here
-            }
-        }
-
-        // irs->nodeHandle_->spinOnce();
-
-        // Delay for appropriate sampling rate
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
-}
-
-    // Debug printing for serial plotter
+// Debug printing for serial plotter
 void IRS::printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_event_t *t, sensors_event_t *m)
 {
-// Print accelerometer data
+    // Print accelerometer data
     Serial.print("\t\tref0:");
     Serial.print(0., 3); // Print with 6 decimal places
     Serial.print("\t\tref16:");
@@ -149,14 +147,28 @@ void IRS::printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_
     Serial.println(m->magnetic.z, 3);
 }
 
-double IRS::computePitchComplementaryFilter(float accx, float accz, float gyrY, uint32_t dT){
-    // Calculate pitch from accelerometers x and z, and yaw change from gyro_y. 
-    float pitch_accelerometers = atan2(accx, accz) * RAD_TO_DEG; 
-    float deltaPitch_gyros = gyrY * dT;
+/* 
+ *  General IRS task to pin to core
+ */
+void IRS_Task(void *pvParameters)
+{
+    IRS *irs = static_cast<IRS *>(pvParameters); // Cast pvParameters to IRS pointer
+    irs->initialize();
 
-    // Combine with complementary filter.
-    pitch = (pitch_previous + deltaPitch_gyros) * COMPLEMENTARY_FILTER_ALPHA_PITCH + pitch_accelerometers * (1. - COMPLEMENTARY_FILTER_ALPHA_PITCH);
-    pitch_previous = pitch;
+    while (true)
+    {
+        if (irs->update())
+        {
 
-    return pitch;
+            if (!irs->runChecks())
+            {
+                // If something really bad happened, fix it here
+            }
+        }
+
+        // irs->nodeHandle_->spinOnce();
+
+        // Delay for appropriate sampling rate
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
 }
