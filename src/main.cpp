@@ -1,5 +1,6 @@
 /********************************************************************************
    BB-1 Self balancing robot by Juerd Mispelblom Beyer
+   V1
 
    CONNECTIONS:
    Arduino D3  - Motor Driver PWM 1 Input
@@ -15,21 +16,21 @@
 #include <Arduino.h>
 #include "Logger.h"
 #include "IRS.h"
+#include "MotorController.h"
 #include "Ros.h"
-#include "I2Cscanner.h"
 
 #define motorLeftPWM 5
 #define motorRightPWM 6
 
 Logger &logger = Logger::getInstance();
-
 IRS irs;
+MotorController motorcontroller(&irs, logger);
 
 void setup()
 {
   Serial.begin(115200); // Ensure this line is present
 
-  logger.setLogLevel(LOG_LEVEL_DEBUG);
+logger.setLogLevel(LOG_LEVEL_DEBUG); 
 
   logger.log(LOG_LEVEL_DEBUG, "System starting...");
 
