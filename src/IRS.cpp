@@ -95,7 +95,8 @@ void IRS::computeOrientation(const sensors_vec_t *acc, const sensors_vec_t *gyr,
     orientation_prev = orientation;
 }
 
-const orientation3* IRS::getOrientation(){
+const orientation3 *IRS::getOrientation()
+{
     return &orientation;
 }
 
@@ -113,43 +114,6 @@ bool IRS::runChecks()
     return true;
 }
 
-// Debug printing for serial plotter
-void IRS::printSensorDataString(sensors_event_t *a, sensors_event_t *g, sensors_event_t *t, sensors_event_t *m)
-{
-    // Print accelerometer data
-    Serial.print("\t\tref0:");
-    Serial.print(0., 3); // Print with 6 decimal places
-    Serial.print("\t\tref16:");
-    Serial.print(16., 3); // Print with 6 decimal places
-
-    // Print accelerometer data
-    Serial.print("\t\taccX:");
-    Serial.print(a->acceleration.x, 3); // Print with 6 decimal places
-    Serial.print("\t\taccY:");
-    Serial.print(a->acceleration.y, 3);
-    Serial.print("\t\taccZ:");
-    Serial.print(a->acceleration.z, 3);
-
-    // Print gyroscope data
-    Serial.print("\t\tgyrX:");
-    Serial.print(g->gyro.x, 3);
-    Serial.print("\t\tgyrY:");
-    Serial.print(g->gyro.y, 3);
-    Serial.print("\t\tgyrZ:");
-    Serial.print(g->gyro.z, 3);
-
-    // Print magnetometer data
-    Serial.print("\t\tmagX:");
-    Serial.print(m->magnetic.x, 3);
-    Serial.print("\t\tmagY:");
-    Serial.print(m->magnetic.y, 3);
-    Serial.print("\t\tmagZ:");
-    Serial.println(m->magnetic.z, 3);
-}
-
-/* 
- *  General IRS task to pin to core
- */
 void IRS_Task(void *pvParameters)
 {
     IRS *irs = static_cast<IRS *>(pvParameters); // Cast pvParameters to IRS pointer
@@ -159,7 +123,6 @@ void IRS_Task(void *pvParameters)
     {
         if (irs->update())
         {
-
             if (!irs->runChecks())
             {
                 // If something really bad happened, fix it here

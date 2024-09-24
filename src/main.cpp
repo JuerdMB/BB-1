@@ -16,7 +16,6 @@
 #include <Arduino.h>
 #include "Logger.h"
 #include "IRS.h"
-#include "MotorController.h"
 #include "Ros.h"
 
 #define motorLeftPWM 5
@@ -24,7 +23,6 @@
 
 Logger &logger = Logger::getInstance();
 IRS irs;
-MotorController motorcontroller(&irs, logger);
 
 void setup()
 {
