@@ -11,32 +11,18 @@
 
  ********************************************************************************/
 
-#define desiredLoopDuration 5
-
 #include <Arduino.h>
-#include "Logger.h"
-#include "IRS.h"
-#include "Ros.h"
+#include "IMU.h"
 
-#define motorLeftPWM 5
-#define motorRightPWM 6
+IMU imu;
 
-Logger &logger = Logger::getInstance();
-IRS irs;
 
 void setup()
 {
   Serial.begin(115200); // Ensure this line is present
 
-logger.setLogLevel(LOG_LEVEL_DEBUG); 
-
-  logger.log(LOG_LEVEL_DEBUG, "System starting...");
-
-  irs.initialize();
-
-  // Setup tasks
-  xTaskCreatePinnedToCore(IRS_Task, "IRS_Task", 10000, (void *)&irs, 1, NULL, 1); // Core 1: IRS Task
-                                                                                  // xTaskCreatePinnedToCore(Motor_Control_Task, "MotorControl_Task", 10000, NULL, 1, NULL, 0);  // Core 0: Motor Control
+  imu.start();
+  // motorDriver.start();
 }
 
 void loop()
