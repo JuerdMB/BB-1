@@ -1,4 +1,4 @@
-#include "IMU.h"
+#include "IMU/IMU.h"
 #include "config.h"
 #include "Logger/Logger.h"
 
@@ -10,7 +10,18 @@ IMU::~IMU()
 {
 }
 
-void IMU::start()
+void IMU::begin()
+{
+    xTaskCreatePinnedToCore(imuTask, "IMU_Task", 10000, (void *)this, 1, NULL, 1); // Core 1: IMU Task
+}
+
+const orientation3D *IMU::getOrientation()
+{
+    // TODO make this thread-safe
+    return &orientation;
+}
+
+void init()
 {
     Wire.begin();
     Wire.setClock(100000);
@@ -18,11 +29,8 @@ void IMU::start()
     bool initialized = false;
     while (!initialized)
     {
-
-        if (icm.begin_SPI(ICM_CS, ICM_SCK, ICM_MISO, ICM_MOSI))
-        {
+        if (imu.begin_SPI(ICM_CS, ICM_SCK, ICM_MISO, ICM_MOSI))
             initialized = true;
-        }
 
         else
         {
@@ -30,21 +38,19 @@ void IMU::start()
             delay(500);
         }
     }
-    icm.setAccelRange(ICM20948_ACCEL_RANGE_16_G);
+    imu.setAccelRange(ICM20948_ACCEL_RANGE_16_G);
 
     logDebug("ICM initialized");
-
-    xTaskCreatePinnedToCore(IMU_Task, "IMU_Task", 10000, (void *)this, 1, NULL, 1); // Core 1: IMU Task
 }
 
-bool IMU::update()
+bool IMU::readRawData()
 {
     //  /* Get a new normalized sensor event */
     sensors_event_t accel;
     sensors_event_t gyro;
     sensors_event_t mag;
     sensors_event_t temp;
-    icm.getEvent(&accel, &gyro, &temp, &mag);
+    imu.getEvent(&accel, &gyro, &temp, &mag);
 
     // Calculate time interval since last measurement
     uint32_t now = micros();
@@ -75,20 +81,12 @@ void IMU::computeOrientation(const sensors_vec_t *acc, const sensors_vec_t *gyr,
     orientation_prev = orientation;
 }
 
-const orientation3D *IMU::getOrientation()
-{
-    // TODO make this thread-safe
-    return &orientation;
-}
-
-void IMU_Task(void *pvParameters)
+void IMU::imuTask(void *pvParameters)
 {
     while (true)
     {
-        // if new imu data available: updateFilteredOrientation();
-        // if success: publish
+        // logic
 
-        // Delay for appropriate sampling rate
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        vTaskDelay(IMU_TASK_DELAY);
     }
 }

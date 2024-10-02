@@ -18,21 +18,19 @@ class IMU
 public:
     IMU();
     ~IMU();
-
-    void initialize();
-    void start();
-    bool update();
-    const orientation3D* getOrientation();
+    void begin();
+    const orientation3D getOrientation();
 
 private:
     Adafruit_ICM20948 icm;
     unsigned long last_icm_update;
-
-    /* Robot pose data */
     orientation3D orientation;
     orientation3D orientation_prev;
 
+    void init();
+    void setDataReadyCallback();
+
+    void readRawData()
+    void imuTask(void *pvParameters);
     void computeOrientation(const sensors_vec_t *acc, const sensors_vec_t *gyr, const sensors_vec_t *mag, uint32_t dT);
 };
-
-void IMU_Task(void *pvParameters);
