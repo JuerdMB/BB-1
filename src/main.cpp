@@ -4,8 +4,10 @@
  ********************************************************************************/
 
 #include <Arduino.h>
-#include "IMU/IMU.h"
-#include "MotorDriver/MotorDriver.h"
+#include "shared_data.h"
+#include "IMU.h"
+#include "MotorDriver.h"
+#include "Logger.h"
 
 IMU imu;
 MotorDriver motorDriver;
@@ -13,11 +15,15 @@ MotorDriver motorDriver;
 void setup()
 {
   Serial.begin(115200);
-  imu.begin();
-  motorDriver.begin();
+  
+  // Initialize shared data structures
+  SharedData::init();
+
+  // Start IMU & MotorDriver task
+  imu.start();
+  motorDriver.start();
 }
 
 void loop()
 {
-  // Empty loop. All is done inside the assigned tasks.
 }

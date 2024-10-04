@@ -1,8 +1,8 @@
 #pragma once
 
-class PID{
+class PID
+{
+public:
     PID();
-    ~PID();
-
     float compute(float input, float target);
 };

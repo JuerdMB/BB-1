@@ -15,6 +15,14 @@ struct position3D {
 };
 
 struct orientation3D {
+    orientation3D(double inR, double inP, double inY): r(inR), p(inP), y(inY)
+    {
+    }
+
+    orientation3D(): r(0.), p(0.), y(0.)
+    {
+    }
+
     double r;
     double p;
     double y;
