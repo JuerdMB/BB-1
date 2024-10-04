@@ -16,4 +16,4 @@
 
 // Delays
 #define IMU_TASK_DELAY 5
-#define MOTORCONTROL_TASK_DELAY 5
+#define MCS_TASK_DELAY 5
