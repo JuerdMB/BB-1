@@ -19,20 +19,3 @@ bool IRS::init()
     Logger::debug("IRS - IRS Succesfully inited.");
     return true;
 }
-
-void IRS::readRawData()
-{
-}
-
-void IRS::updateFilteredOrientation()
-{
-}
-
-void IRS::publishFilteredOrientation()
-{
-}
-
-bool IRS::isDataReady()
-{
-    return imu_.isDataReady();
-}
