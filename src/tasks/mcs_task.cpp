@@ -1,21 +1,21 @@
 #include "tasks/mcs_task.h"
-#include "MotorControlSystem/MotorController.h"
+#include "MotorControlSystem/BalanceController.h"
 #include "utility/Logger.h"
 
 void mcs_task(void *pvParameters)
 {
     Logger::debug("mcs_task - Setting up mcs_task.");
 
-    MotorController motorController;
+    BalanceController BalanceController;
 
-    if (motorController.init() == true)
+    if (BalanceController.init() == true)
         while (true)
         {
 
-            if (motorController.updateOrientationData())
+            if (BalanceController.updateOrientationData())
             {
 
-                Logger::debug("mcs_task - MotorController got new orientation data!");
+                Logger::debug("mcs_task - BalanceController got new orientation data!");
             }
 
             else
@@ -25,8 +25,8 @@ void mcs_task(void *pvParameters)
             }
 
             // // Always update motor speeds. Even when no IMU data is available, new heading might be available.
-            // motorController.updateMotorSpeeds();
-            // motorController.setMotorSpeeds();
+            // BalanceController.updateMotorSpeeds();
+            // BalanceController.setMotorSpeeds();
 
             // Delay task with configured duration
             vTaskDelay(MCS_TASK_DELAY / portTICK_PERIOD_MS);

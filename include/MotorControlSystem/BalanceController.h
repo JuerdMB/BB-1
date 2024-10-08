@@ -2,15 +2,15 @@
 
 #include "MotorDriver.h"
 #include "PID.h"
+#include "data_types.h"
 
-class MotorController
+class BalanceController
 {
 public:
-    MotorController();
+    BalanceController();
     bool init();
-    bool updateOrientationData();
+    OrientationData getOrientationData();
     void updateMotorSpeeds();
-    void setMotorSpeeds();
 
 private:
     MotorDriver motor_driver_;
