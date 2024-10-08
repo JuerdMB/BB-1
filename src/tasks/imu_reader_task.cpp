@@ -1,7 +1,7 @@
 #include "config.h"
 #include "utility/Logger.h"
 #include "tasks/imu_reader_task.h"
-#include "IRS/IRS.h"
+#include "hardware/imu.h"
 
 void imu_reader_task(void *parameters)
 {

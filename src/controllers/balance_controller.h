@@ -1,8 +1,8 @@
 #pragma once
 
-#include "MotorDriver.h"
-#include "PID.h"
-#include "data_types.h"
+#include "hardware/motor_driver.h"
+#include "controllers/pid_controller.h"
+#include "utility/data_types.h"
 
 class BalanceController
 {

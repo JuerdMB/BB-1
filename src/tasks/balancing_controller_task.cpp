@@ -1,7 +1,7 @@
 #include "tasks/balancing_controller_task.h"
-#include "MotorControlSystem/BalanceController.h"
+#include "controllers/balance_controller.h"
 #include "utility/Logger.h"
-#include "data_types.h"
+#include "utility/data_types.h"
 
 void balancing_controller_task(void *pvParameters)
 {

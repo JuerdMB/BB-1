@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_ICM20948.h>
-#include "IRS/IMU.h"
 #include "config.h"
+#include "imu.h"
 #include "utility/Logger.h"
 
 IMU::IMU() : icm_(Adafruit_ICM20948()), data_ready_(false), last_imu_update_(0)

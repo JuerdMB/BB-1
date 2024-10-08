@@ -1,5 +1,5 @@
-#include "MotorControlSystem/BalanceController.h"
-#include "MotorControlSystem/MotorDriver.h"
+#include "balance_controller.h"
+#include "hardware/motor_driver.h"
 #include "utility/Logger.h"
 
 BalanceController::BalanceController() : motor_driver_(MotorDriver()), pid_balance_(PID()), pid_heading_(PID()), pid_speed_(PID())
