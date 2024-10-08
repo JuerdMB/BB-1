@@ -3,7 +3,8 @@
 class MotorDriver
 {
 public:
-    void init();
+    MotorDriver();
+    bool init();
 
 private:
 };

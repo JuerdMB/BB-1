@@ -1,4 +1,4 @@
-#include "Logger.h"
+#include "utility/Logger.h"
 
 LogLevel Logger::logLevel = DEFAULT_LOG_LEVEL;
 

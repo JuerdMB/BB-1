@@ -7,7 +7,7 @@ class MotorController
 {
 public:
     MotorController();
-    void init();
+    bool init();
     bool updateOrientationData();
     void updateMotorSpeeds();
     void setMotorSpeeds();

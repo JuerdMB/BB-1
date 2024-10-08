@@ -1,8 +1,10 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
 #include "data_types.h"
-#include "shared_data.h"
-#include "Logger.h"
+#include "utility/shared_data.h"
+#include "utility/Logger.h"
+
+QueueHandle_t SharedData::orientation_queue_ = QueueHandle_t();
 
 void SharedData::init() {
     // Create a queue capable of holding 10 OrientationData items

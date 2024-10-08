@@ -7,7 +7,7 @@ class IRS
 {
 public:
     IRS();
-    void init();
+    bool init();    // TODO - Create error type for error checking
     void readRawData();
     void updateFilteredOrientation();
     void publishFilteredOrientation();
