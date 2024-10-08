@@ -4,7 +4,7 @@
 #include "config.h"
 #include "utility/Logger.h"
 
-IMU::IMU() : icm_(Adafruit_ICM20948()), data_ready_(false)
+IMU::IMU() : icm_(Adafruit_ICM20948()), data_ready_(false), last_imu_update_(0)
 {
 }
 
@@ -51,3 +51,45 @@ bool IMU::init()
 void IMU::setDataReadyCallback(void (*callback)())
 {
 }
+
+void IMU::readRawData()
+{
+    // Update central accel, gyro, temperature and magnetometer values
+    // imu.getEvent(&this->accel, &this->gyro, &this->temperature, &this->mag);
+}
+
+void IMU::updateFilteredOrientation()
+{
+    // // Calculate time interval since last measurement
+    // uint32_t now = micros();
+    // uint32_t dT = now - last_imu_update_;
+    // last_imu_update_ = now;
+
+    // // Compute pitch in radians from accelerometers x and z
+    // double pitch_accelerometers = atan2(accel.acceleration.x, accel.acceleration.z);
+
+    // // Compute yaw rate from gyro_y.
+    // float pitch_change = gyro.gyro.y * dT;
+
+    // // Combine with complementary filter.
+    // float pitch_filtered = (pitch_filtered_prev + pitch_change) * COMPLEMENTARY_FILTER_ALPHA_PITCH + pitch_accelerometers * (1. - COMPLEMENTARY_FILTER_ALPHA_PITCH);
+
+    // // Store current orientation for orientation rate in next cycle
+    // pitch_filtered_prev = pitch_filtered;
+
+    // // Update orientation
+    // orientation_.p = pitch_filtered;
+}
+
+void IMU::publishFilteredOrientation()
+{
+        // Publis to 
+    // SharedData::setOrientation(orientation_);
+
+    // Publish to ROS
+    // orientation3D orientation = getOrientation();
+
+    // Publish over ROS2
+    // rosNode.publishOrientation(orientation);
+}
+
