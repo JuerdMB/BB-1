@@ -1,11 +1,11 @@
-#include "tasks/mcs_task.h"
+#include "tasks/balancing_controller_task.h"
 #include "MotorControlSystem/BalanceController.h"
 #include "utility/Logger.h"
 #include "data_types.h"
 
-void mcs_task(void *pvParameters)
+void balancing_controller_task(void *pvParameters)
 {
-    Logger::debug("mcs_task - Setting up mcs_task.");
+    Logger::debug("balancing_controller_task - Setting up balancing_controller_task.");
 
     BalanceController BalanceController;
 
@@ -14,14 +14,14 @@ void mcs_task(void *pvParameters)
         {
             // TODO: wait for dataReady with FreeRTOS
 
-            Logger::debug("mcs_task - BalanceController got new orientation data!");
+            Logger::debug("balancing_controller_task - BalanceController got new orientation data!");
 
             OrientationData OrientationData = BalanceController.getOrientationData();
 
             // Error checking
             // if(X){
             //     // Handle the case where there is corrupt data or st
-            //     Logger::warn("mcs_task - No new orientation data received upon update.");
+            //     Logger::warn("balancing_controller_task - No new orientation data received upon update.");
             // }
 
             // // Always update motor speeds. Even when no IMU data is available, new heading might be available.

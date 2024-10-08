@@ -1,11 +1,11 @@
 #include "config.h"
-#include "tasks/irs_task.h"
-#include "IRS/IRS.h"
 #include "utility/Logger.h"
+#include "tasks/imu_reader_task.h"
+#include "IRS/IRS.h"
 
-void irs_task(void *parameters)
+void imu_reader_task(void *parameters)
 {
-    Logger::debug("irs_task - Setting up irs_task.");
+    Logger::debug("imu_reader_task - Setting up imu_reader_task.");
 
     IRS irs;
 
@@ -16,7 +16,7 @@ void irs_task(void *parameters)
         while (true)
         {
             // TODO: wait for dataReady with FreeRTOS
-            Logger::debug("irs_task - Got new IMU data.");
+            Logger::debug("imu_reader_task - Got new IMU data.");
 
             //     irs.readRawData();
             //     irs.updateFilteredOrientation();
