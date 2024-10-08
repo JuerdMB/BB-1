@@ -15,19 +15,12 @@ void irs_task(void *parameters)
 
         while (true)
         {
+            // TODO: wait for dataReady with FreeRTOS
+            Logger::debug("irs_task - Got new IMU data.");
 
-            if (irs.isDataReady())
-            {
-                Logger::debug("irs_task - Got new IMU data.");
-                //     irs.readRawData();
-                //     irs.updateFilteredOrientation();
-                //     irs.publishFilteredOrientation();
-            }
-            else
-            {
-                //     // Handle the case whe/re IMU is not ready
-                Logger::warn("irs_task - No IMU data available.");
-            }
+            //     irs.readRawData();
+            //     irs.updateFilteredOrientation();
+            //     irs.publishFilteredOrientation();
 
             // Delay task with configured duration
             vTaskDelay(IMU_TASK_DELAY / portTICK_PERIOD_MS);

@@ -8,7 +8,6 @@ class IMU
 public:
     IMU();
     bool init();
-    bool isDataReady();
 
 private:
     void setDataReadyCallback(void (*callback)());

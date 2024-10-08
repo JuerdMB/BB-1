@@ -48,13 +48,6 @@ bool IMU::init()
     return true;
 }
 
-bool IMU::isDataReady()
-{
-    // Tester implementation randomizes true value
-    bool isTrue = (bool)random(2);
-    return isTrue;
-}
-
 void IMU::setDataReadyCallback(void (*callback)())
 {
 }
