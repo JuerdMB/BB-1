@@ -1,7 +1,7 @@
 #include "tasks/balancing_controller_task.h"
 #include "controllers/balance_controller.h"
 #include "utility/Logger.h"
-#include "utility/data_types.h"
+#include "utility/utils.h"
 
 void balancing_controller_task(void *pvParameters)
 {
@@ -29,6 +29,6 @@ void balancing_controller_task(void *pvParameters)
             // BalanceController.setMotorSpeeds();
 
             // Delay task with configured duration
-            vTaskDelay(MCS_TASK_DELAY / portTICK_PERIOD_MS);
+            vTaskDelay(1000);
         }
 }

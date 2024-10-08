@@ -105,7 +105,7 @@ BB-1
 │   │   ├── MotorDriver.h
 │   │   └── PID.h
 │   ├── config.h
-│   ├── data_types.h
+│   ├── utils.h
 │   ├── tasks
 │   │   ├── imu_reader_task.h
 │   │   └── balancing_controller_task.h
@@ -140,7 +140,7 @@ BB-1
   - **Logger**: Provides logging functionality with various log levels.
   - **shared_data**: Manages shared data between tasks using FreeRTOS queues.
 - **config.h**: Contains configuration constants like GPIO pins and task delays.
-- **data_types.h**: Defines custom data structures used across the project.
+- **utils.h**: Defines custom data structures used across the project.
 - **platformio.ini**: Configuration file for PlatformIO environment settings.
 
 ## License
