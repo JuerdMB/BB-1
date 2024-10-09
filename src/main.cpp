@@ -1,32 +1,23 @@
-/********************************************************************************
-   BB-1 Self balancing robot by Juerd Mispelblom Beyer
-   V1
- ********************************************************************************/
-
 #include <Arduino.h>
 #include "config.h"
 #include "utility/shared_data.h"
-#include "tasks/balancingControllerTask.h"
-#include "tasks/communicationTask.h"
-#include "tasks/diagnosticsTask.h"
-#include "tasks/encoderReadingTask.h"
-#include "tasks/imuReadingTask.h"
-#include "tasks/motionControllerTask.h"
+#include "tasks/balancing_controller_task.h"
+#include "tasks/communication_task.h"
+#include "tasks/diagnostics_task.h"
+#include "tasks/encoder_reader_task.h"
+#include "tasks/imu_reader_task.h"
+#include "tasks/motion_controller_task.h"
 
 void setup()
 {
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  // Initialize hardware components
-  // Communication::init();
-  // MotorDriver::init();
-  // IMU::init();
-  // WheelEncoders::init();
-  SharedData::init();
+    // Initialize Shared Data Queues
+    SharedData::init();
 
-  // Create tasks
+    // Create tasks
     xTaskCreatePinnedToCore(
-        imuReadingTask,
+        imuReaderTask,
         "IMU Reading Task",
         TASK_STACK_SIZE,
         nullptr,

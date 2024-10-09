@@ -15,7 +15,7 @@ constexpr uint8_t ICM_INTERRUPT     = 24;
 constexpr uint8_t DEFAULT_LOG_LEVEL = 0;
 
 // Orientation Filtering Constants
-constexpr float COMPLEMENTARY_FILTER_ALPHA_PITCH = .05;
+constexpr float COMPLEMENTARY_FILTER_PITCH_ALPHA = .05;
 
 // Control loop frequencies (Hz)
 constexpr uint16_t BALANCING_CONTROL_FREQUENCY = 200;

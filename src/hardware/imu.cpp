@@ -4,8 +4,9 @@
 #include "imu.h"
 #include "tasks/imu_reader_task.h"
 #include "utility/Logger.h"
+#include "utility/shared_data.h"
 
-IMU::IMU() : icm_(Adafruit_ICM20948()), last_imu_update_(0)
+IMU::IMU() : icm_(Adafruit_ICM20948()), currentOrientation_(Orientation()), lastOrientationUpdate_(0)
 {
 }
 
@@ -55,42 +56,55 @@ bool IMU::init()
 
 void IMU::retrieveRawData()
 {
+    // Temporary store reading values
+    sensors_event_t *accel;
+    sensors_event_t *gyro;
+    sensors_event_t *temp;
+    sensors_event_t *mag;
+
     // Update central accel, gyro, temperature and magnetometer values
-    // imu.getEvent(&this->accel, &this->gyro, &this->temperature, &this->mag);
+    icm_.getEvent(accel, gyro, temp, mag);
+
+    // Update central accel, gyro, temperature and magnetometer values
+    latestIMUData_.accelerometer.x = accel->acceleration.x;
+    latestIMUData_.accelerometer.y = accel->acceleration.y;
+    latestIMUData_.accelerometer.z = accel->acceleration.z;
+    latestIMUData_.gyroscope.x = gyro->gyro.x;
+    latestIMUData_.gyroscope.y = gyro->gyro.y;
+    latestIMUData_.gyroscope.z = gyro->gyro.z;
+    latestIMUData_.magnetometer.x = mag->magnetic.x;
+    latestIMUData_.magnetometer.y = mag->magnetic.y;
+    latestIMUData_.magnetometer.z = mag->magnetic.z;
 }
 
 void IMU::updateFilteredOrientation()
 {
     // // Calculate time interval since last measurement
-    // uint32_t now = micros();
-    // uint32_t dT = now - last_imu_update_;
-    // last_imu_update_ = now;
+    uint32_t now = micros();
+    uint32_t deltaTime = now - lastOrientationUpdate_;
+    lastOrientationUpdate_ = now;
 
-    // // Compute pitch in radians from accelerometers x and z
-    // double pitch_accelerometers = atan2(accel.acceleration.x, accel.acceleration.z);
+    // Compute pitch in radians from accelerometers x and z
+    double pitch_accelerometers = atan2(latestIMUData_.accelerometer.x, latestIMUData_.accelerometer.z);
 
-    // // Compute yaw rate from gyro_y.
-    // float pitch_change = gyro.gyro.y * dT;
+    // Compute yaw rate from gyro_y, assuming gyro rate from sensor is in rad/s
+    float pitch_rate = latestIMUData_.gyroscope.y * deltaTime * 1000000;
 
-    // // Combine with complementary filter.
-    // float pitch_filtered = (pitch_filtered_prev + pitch_change) * COMPLEMENTARY_FILTER_ALPHA_PITCH + pitch_accelerometers * (1. - COMPLEMENTARY_FILTER_ALPHA_PITCH);
+    // Combine with complementary filter.
+    float pitch_filtered = (previousOrientation_.pitch + pitch_rate) * COMPLEMENTARY_FILTER_PITCH_ALPHA + pitch_accelerometers * (1.f - COMPLEMENTARY_FILTER_PITCH_ALPHA);
 
-    // // Store current orientation for orientation rate in next cycle
-    // pitch_filtered_prev = pitch_filtered;
+    // Update previous orientation
+    previousOrientation_ = currentOrientation_;
 
-    // // Update orientation
-    // orientation_.p = pitch_filtered;
+    // Update orientation
+    currentOrientation_.pitch = pitch_filtered;
 }
 
 void IMU::publishFilteredOrientation()
 {
-        // Publis to 
-    // SharedData::setOrientation(orientation_);
-
-    // Publish to ROS
-    // orientation3D orientation = getOrientation();
+    // Publish to FreeRTOS queue
+    SharedData::sendOrientationData(currentOrientation_);
 
     // Publish over ROS2
     // rosNode.publishOrientation(orientation);
 }
-

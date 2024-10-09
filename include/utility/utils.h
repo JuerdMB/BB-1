@@ -2,6 +2,12 @@
 
 #include <Arduino.h>
 
+struct Vector3{
+    float x;
+    float y;
+    float z;
+};
+
 struct Orientation
 {
     double roll;
@@ -12,15 +18,9 @@ struct Orientation
 
 struct RawIMUdata
 {
-    float ax;
-    float ay;
-    float az;
-    float gx;
-    float gy;
-    float gz;
-    float mx;
-    float my;
-    float mz;
+    Vector3 accelerometer;
+    Vector3 gyroscope;
+    Vector3 magnetometer;
 };
 
 // IMU Data Structure
@@ -33,12 +33,6 @@ struct IMUData {
 struct EncoderData {
     float leftWheelSpeed;
     float rightWheelSpeed;
-};
-
-struct Vector3{
-    float x;
-    float y;
-    float z;
 };
 
 struct ControlData{

@@ -1,3 +1,3 @@
 #pragma once
 
-void communication_task(void* pvParameters);
+void communicationTask(void* pvParameters);
