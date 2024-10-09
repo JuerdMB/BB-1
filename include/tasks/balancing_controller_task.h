@@ -1,3 +1,3 @@
 #pragma once
 
-void balancing_controller_task(void* pvParameters);
+void balancingControllerTask(void* pvParameters);

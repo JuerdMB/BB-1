@@ -11,7 +11,7 @@ QueueHandle_t SharedData::control_data_queue_ = QueueHandle_t();
 void SharedData::init()
 {
     // Create a queue capable of holding 10 OrientationData items
-    orientation_data_queue_ = xQueueCreate(10, sizeof(OrientationData));
+    orientation_data_queue_ = xQueueCreate(10, sizeof(Orientation));
     if (orientation_data_queue_ == NULL)
     {
         Logger::error("SharedData - Failed to create orientation queue.");
@@ -32,7 +32,7 @@ void SharedData::init()
     }
 }
 
-bool SharedData::sendOrientationData(OrientationData orientationData)
+bool SharedData::sendOrientationData(Orientation orientationData)
 {
     // Send to queue without blocking
     if (xQueueSend(orientation_data_queue_, &orientationData, portMAX_DELAY) != pdPASS)
@@ -43,7 +43,7 @@ bool SharedData::sendOrientationData(OrientationData orientationData)
     return true;
 }
 
-bool SharedData::receiveOrientationData(OrientationData *orientationData)
+bool SharedData::receiveOrientationData(Orientation *orientationData)
 {
     if (xQueueReceive(orientation_data_queue_, orientationData, portMAX_DELAY) != pdPASS)
     {

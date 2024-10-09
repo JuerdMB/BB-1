@@ -9,7 +9,7 @@ class BalanceController
 public:
     BalanceController();
     bool init();
-    OrientationData getOrientationData();
+    Orientation retrieveOrientationFromIMU();
     void updateMotorSpeeds();
 
 private:

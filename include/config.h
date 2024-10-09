@@ -9,6 +9,7 @@ constexpr uint8_t ICM_CS            = 5;
 constexpr uint8_t ICM_SCK           = 18;
 constexpr uint8_t ICM_MISO          = 19;
 constexpr uint8_t ICM_MOSI          = 23;
+constexpr uint8_t ICM_INTERRUPT     = 24;
 
 // Logging
 constexpr uint8_t DEFAULT_LOG_LEVEL = 0;

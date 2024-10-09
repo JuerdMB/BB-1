@@ -3,9 +3,9 @@
 #include "utility/Logger.h"
 #include "utility/utils.h"
 
-void balancing_controller_task(void *pvParameters)
+void balancingControllerTask(void *pvParameters)
 {
-    Logger::debug("balancing_controller_task - Setting up balancing_controller_task.");
+    Logger::debug("balancingControllerTask - Setting up balancingControllerTask.");
 
     BalanceController BalanceController;
 
@@ -14,14 +14,14 @@ void balancing_controller_task(void *pvParameters)
         {
             // TODO: wait for dataReady with FreeRTOS
 
-            Logger::debug("balancing_controller_task - BalanceController got new orientation data!");
+            Logger::debug("balancingControllerTask - BalanceController got new orientation data!");
 
-            OrientationData OrientationData = BalanceController.getOrientationData();
+            Orientation OrientationData = BalanceController.retrieveOrientationFromIMU();
 
             // Error checking
             // if(X){
             //     // Handle the case where there is corrupt data or st
-            //     Logger::warn("balancing_controller_task - No new orientation data received upon update.");
+            //     Logger::warn("balancingControllerTask - No new orientation data received upon update.");
             // }
 
             // // Always update motor speeds. Even when no IMU data is available, new heading might be available.

@@ -6,12 +6,12 @@
 #include <Arduino.h>
 #include "config.h"
 #include "utility/shared_data.h"
-#include "tasks/balancing_controller_task.h"
-#include "tasks/communication_task.h"
-#include "tasks/diagnostics_task.h"
-#include "tasks/encoder_reader_task.h"
-#include "tasks/imu_reader_task.h"
-#include "tasks/motion_controller_task.h"
+#include "tasks/balancingControllerTask.h"
+#include "tasks/communicationTask.h"
+#include "tasks/diagnosticsTask.h"
+#include "tasks/encoderReadingTask.h"
+#include "tasks/imuReadingTask.h"
+#include "tasks/motionControllerTask.h"
 
 void setup()
 {
@@ -26,7 +26,7 @@ void setup()
 
   // Create tasks
     xTaskCreatePinnedToCore(
-        imu_reader_task,
+        imuReadingTask,
         "IMU Reading Task",
         TASK_STACK_SIZE,
         nullptr,
@@ -36,7 +36,7 @@ void setup()
     );
 
     xTaskCreatePinnedToCore(
-        balancing_controller_task,
+        balancingControllerTask,
         "Balancing Controller Task",
         TASK_STACK_SIZE,
         nullptr,
@@ -46,7 +46,7 @@ void setup()
     );
 
     xTaskCreatePinnedToCore(
-        motion_controller_task,
+        motionControllerTask,
         "Motion Controller Task",
         TASK_STACK_SIZE,
         nullptr,
@@ -56,7 +56,7 @@ void setup()
     );
 
     xTaskCreatePinnedToCore(
-        encoder_reader_task,
+        encoderReadingTask,
         "Encoder Reading Task",
         TASK_STACK_SIZE,
         nullptr,
@@ -66,7 +66,7 @@ void setup()
     );
 
     xTaskCreatePinnedToCore(
-        communication_task,
+        communicationTask,
         "Communication Task",
         TASK_STACK_SIZE,
         nullptr,
@@ -76,7 +76,7 @@ void setup()
     );
 
     xTaskCreatePinnedToCore(
-        diagnostics_task,
+        diagnosticsTask,
         "Diagnostics Task",
         TASK_STACK_SIZE,
         nullptr,

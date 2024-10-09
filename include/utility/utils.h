@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-struct OrientationData
+struct Orientation
 {
     double roll;
     double pitch;

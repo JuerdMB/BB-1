@@ -27,9 +27,9 @@ bool BalanceController::init()
     return true;
 }
 
-OrientationData BalanceController::getOrientationData()
+Orientation BalanceController::retrieveOrientationFromIMU()
 {
-    OrientationData orientationData;
+    Orientation orientationData;
     return orientationData;
 }
 

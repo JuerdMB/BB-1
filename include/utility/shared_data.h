@@ -9,8 +9,8 @@ public:
     static void init();
 
     // Orientation Output from IMU task
-    static bool sendOrientationData(OrientationData orientationData);
-    static bool receiveOrientationData(OrientationData *orientationData);
+    static bool sendOrientationData(Orientation orientationData);
+    static bool receiveOrientationData(Orientation *orientationData);
 
     // Encoder Output from encoder task
     static bool sendEncoderData(EncoderData encoderData);
