@@ -1,6 +1,6 @@
 #include "utility/Logger.h"
 
-LogLevel Logger::logLevel = DEFAULT_LOG_LEVEL;
+LogLevel Logger::logLevel = LOG_LEVEL_DEBUG;
 
 void Logger::setLogLevel(LogLevel level)
 {
@@ -11,7 +11,6 @@ void Logger::logMessage(LogLevel level, const char *levelStr, const char *format
 {
     if (logLevel <= level)
     {
-        // Get the current time in milliseconds
         unsigned long timecode = millis();
 
         // Print timecode and log level
