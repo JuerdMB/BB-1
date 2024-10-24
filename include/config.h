@@ -3,13 +3,15 @@
 #include <Arduino.h>
 
 // ESP32 GPIO Pins
-constexpr uint8_t MOTOR_LEFT_PIN    = 5;
-constexpr uint8_t MOTOR_RIGHT_PIN   = 6;
-constexpr uint8_t ICM_CS            = 5;
-constexpr uint8_t ICM_SCK           = 18;
-constexpr uint8_t ICM_MISO          = 19;
-constexpr uint8_t ICM_MOSI          = 23;
-constexpr uint8_t ICM_INTERRUPT     = 24;
+constexpr uint8_t MOTOR_LEFT_A   = 36;
+constexpr uint8_t MOTOR_LEFT_B   = 39;
+constexpr uint8_t MOTOR_RIGHT_A   = 34;
+constexpr uint8_t MOTOR_RIGHT_B   = 35;
+constexpr uint8_t ICM_CS            = 5;    // NCS
+constexpr uint8_t ICM_SCK           = 18;   // SCLK
+constexpr uint8_t ICM_MISO          = 19;   // SDO
+constexpr uint8_t ICM_MOSI          = 23;   // SDI
+constexpr uint8_t ICM_INTERRUPT     = 13;
 
 // Logging
 constexpr uint8_t DEFAULT_LOG_LEVEL = 0;
