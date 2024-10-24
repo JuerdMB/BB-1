@@ -92,6 +92,75 @@ Ensure the `platformio.ini` file is configured for your specific ESP32 board. Up
 - The PID controllers are defined in `PID.h` and instantiated in `MotorController`.
 - Adjust the constants for `kp`, `ki`, and `kd` to fine-tune performance.
 
+<<<<<<< HEAD
+=======
+## Project Structure
+
+```
+BB-1
+├── include
+│   ├── IRS
+│   │   ├── IMU.h
+│   │   └── IRS.h
+│   ├── MotorControlSystem
+│   │   ├── MotorController.h
+│   │   ├── MotorDriver.h
+│   │   └── PID.h
+│   ├── config.h
+│   ├── utils.h
+│   ├── tasks
+│   │   ├── imuReadingTask.h
+│   │   └── balancingControllerTask.h
+│   └── utility
+│       ├── Logger.h
+│       └── shared_data.h
+├── platformio.ini
+└── src
+    ├── main.cpp
+    ├── tasks
+    │   ├── imuReadingTask.cpp
+    │   └── balancingControllerTask.cpp
+    └── utility
+        ├── Logger.cpp
+        └── shared_data.cpp
+```
+
+### Key Components
+
+- **main.cpp**: Initializes the system and starts the FreeRTOS tasks.
+- **IRS (Inertial Reference System)**:
+  - **IMU.h**: Manages the IMU sensor initialization and data readiness.
+  - **IRS.h**: Handles reading raw IMU data and computing the filtered orientation.
+- **MotorControlSystem**:
+  - **MotorController.h**: Controls motor speeds based on orientation data.
+  - **MotorDriver.h**: Interfaces with the motor driver hardware.
+  - **PID.h**: Implements the PID control algorithm.
+- **Tasks**:
+  - **imuReadingTask**: Reads sensor data and updates orientation.
+  - **balancingControllerTask**: Adjusts motor speeds to maintain balance.
+- **Utility**:
+  - **Logger**: Provides logging functionality with various log levels.
+  - **shared_data**: Manages shared data between tasks using FreeRTOS queues.
+- **config.h**: Contains configuration constants like GPIO pins and task delays.
+- **utils.h**: Defines custom data structures used across the project.
+- **platformio.ini**: Configuration file for PlatformIO environment settings.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Acknowledgments
+
+- Special thanks to the open-source community for tools and libraries.
+- Inspired by various self-balancing robot projects and educational resources.
+
+# Contact
+
+For questions or suggestions, feel free to reach out to the project maintainer at [your.email@example.com](mailto:your.email@example.com).
+
+# Contributing
+
+>>>>>>> newStructure
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or fixes.
 
 ---

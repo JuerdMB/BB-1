@@ -1,39 +1,80 @@
-/********************************************************************************
-   BB-1 Self balancing robot by Juerd Mispelblom Beyer
-   V1
- ********************************************************************************/
-
 #include <Arduino.h>
+#include "config.h"
 #include "utility/shared_data.h"
-#include "tasks/irs_task.h"
-#include "tasks/mcs_task.h"
+#include "tasks/balancing_controller_task.h"
+#include "tasks/communication_task.h"
+#include "tasks/diagnostics_task.h"
+#include "tasks/encoder_reader_task.h"
+#include "tasks/imu_reader_task.h"
+#include "tasks/motion_controller_task.h"
 
 void setup()
 {
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  // Initialize Shared Data Structures
-  SharedData::init();
+    // Initialize Shared Data Queues
+    SharedData::init();
 
-  // Start IRS Task
-  xTaskCreatePinnedToCore(
-      irs_task,
-      "IRS Task",
-      4096,
-      NULL,
-      5,
-      NULL,
-      1);
+    // Create tasks
+    xTaskCreatePinnedToCore(
+        imuReaderTask,
+        "IMU Reading Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        IMU_READER_TASK_PRIORITY,
+        nullptr,
+        1 // Core 1
+    );
 
-  // Start Motor Control Task
-  xTaskCreatePinnedToCore(
-      mcs_task,
-      "MSC Task",
-      4096,
-      NULL,
-      10,
-      NULL,
-      0);
+    xTaskCreatePinnedToCore(
+        balancingControllerTask,
+        "Balancing Controller Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        BALANCING_CONTROLLER_TASK_PRIORITY,
+        nullptr,
+        1 // Core 1
+    );
+
+    xTaskCreatePinnedToCore(
+        motionControllerTask,
+        "Motion Controller Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        MOTION_CONTROLLER_TASK_PRIORITY,
+        nullptr,
+        0 // Core 0
+    );
+
+    xTaskCreatePinnedToCore(
+        encoderReadingTask,
+        "Encoder Reading Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        ENCODER_READING_TASK_PRIORITY,
+        nullptr,
+        0 // Core 0
+    );
+
+    xTaskCreatePinnedToCore(
+        communicationTask,
+        "Communication Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        COMMUNICATION_TASK_PRIORITY,
+        nullptr,
+        0 // Core 0
+    );
+
+    xTaskCreatePinnedToCore(
+        diagnosticsTask,
+        "Diagnostics Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        DIAGNOSTICS_TASK_PRIORITY,
+        nullptr,
+        0 // Core 0
+    );
 }
 
 void loop()

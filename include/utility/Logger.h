@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 #include <stdarg.h>
-#include "config.h"
 
 enum LogLevel
 {
