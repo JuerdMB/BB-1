@@ -27,16 +27,16 @@ void imuReaderTask(void *parameters)
     while (true)
     {
         // Wait for notification from ISR
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         Logger::debug("imuReaderTask - Got new IMU data.");
 
         // Obtain new data from sensor
         imu.retrieveRawData();
-        imu.updateFilteredOrientation();
-        imu.publishFilteredOrientation();
+        // imu.updateFilteredOrientation();
+        // imu.publishFilteredOrientation();
 
         // Delay task with configured duration
-        vTaskDelay(1000);
+        vTaskDelay(100);
     }
 }
 

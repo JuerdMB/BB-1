@@ -37,7 +37,7 @@ constexpr uint8_t COMMUNICATION_TASK_PRIORITY = 2;
 constexpr uint8_t DIAGNOSTICS_TASK_PRIORITY = 1;
 
 // Task stack sizes
-constexpr uint16_t TASK_STACK_SIZE = 2048;
+constexpr uint16_t TASK_STACK_SIZE = 4096;
 
 // Physical constants
 constexpr float WHEEL_BASE = 0.15f; // Distance between wheels in meters
