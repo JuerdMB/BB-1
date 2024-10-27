@@ -2,11 +2,6 @@
 
 #include <Arduino.h>
 
-struct Vector3{
-    float x;
-    float y;
-    float z;
-};
 
 struct Orientation
 {
@@ -18,24 +13,40 @@ struct Orientation
 
 struct RawIMUdata
 {
-    Vector3 accelerometer;
-    Vector3 gyroscope;
-    Vector3 magnetometer;
+    Vector3<float> accelerometer;
+    Vector3<float> gyroscope;
+    Vector3<float> magnetometer;
 };
 
 // IMU Data Structure
-struct IMUData {
+struct IMUData
+{
     float pitchAngle;
     float pitchRate;
 };
 
 // Wheel Encoder Data Structure
-struct EncoderData {
+struct EncoderData
+{
     float leftWheelSpeed;
     float rightWheelSpeed;
 };
 
-struct ControlData{
-    Vector3 linear;
-    Vector3 angular;
+struct ControlData
+{
+    Vector3<float> linear;
+    Vector3<float> angular;
+};
+
+template <typename T>
+struct Vector3
+{
+private:
+    T x;
+    T y;
+    T z;
+
+public:
+    Vector3(T x, T y, T z);
+    Vector3();
 };
