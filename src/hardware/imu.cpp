@@ -6,8 +6,8 @@
 #include "utility/Logger.h"
 #include "utility/shared_data.h"
 
-IMU::IMU() : icm_(Adafruit_ICM20948()), latestIMUData_(RawIMUdata()), currentOrientation_(Orientation()), 
-                    previousOrientation_(Orientation()),lastOrientationUpdate_(0)
+IMU::IMU() : icm_(Adafruit_ICM20948()), latestIMUData_(RawIMUdata()), currentOrientation_(Orientation()),
+             previousOrientation_(Orientation()), lastOrientationUpdate_(0)
 {
 }
 
@@ -23,7 +23,7 @@ bool IMU::init()
 
         if (inited)
         {
-            Logger::info("IMU - ICM20948 Found!");
+            Logger::info("IMU - ICM20948 Found after %d attempts!", retry_count+1);
             break;
         }
 
@@ -58,35 +58,29 @@ bool IMU::init()
 
 void IMU::retrieveRawData()
 {
-    // Temporary store reading values
-    sensors_event_t accel_event, gyro_event, temp_event, mag_event;
-    sensors_event_t *accel = &accel_event;
-    sensors_event_t *gyro = &gyro_event;
-    sensors_event_t *temp = &temp_event;
-    sensors_event_t *mag = &mag_event;
-
     // Update central accel, gyro, temperature and magnetometer values
-    if (!icm_.getEvent(accel, gyro, temp, mag))
+    sensors_event_t accel_event, gyro_event, temp_event, mag_event;
+    if (!icm_.getEvent(&accel_event, &gyro_event, &temp_event, &mag_event))
     {
-        Logger::warn("retrieving data from ICM unsuccesful with [accel], [gyro], [temp], [mag]");
+        Logger::warn("unsuccesful read from ICM unsuccesful with [accel], [gyro], [temp], [mag]");
         return;
     }
 
     // Update central accel, gyro, temperature and magnetometer values
-    latestIMUData_.accelerometer.x = accel->acceleration.x;
-    latestIMUData_.accelerometer.y = accel->acceleration.y;
-    latestIMUData_.accelerometer.z = accel->acceleration.z;
-    latestIMUData_.gyroscope.x = gyro->gyro.x;
-    latestIMUData_.gyroscope.y = gyro->gyro.y;
-    latestIMUData_.gyroscope.z = gyro->gyro.z;
-    latestIMUData_.magnetometer.x = mag->magnetic.x;
-    latestIMUData_.magnetometer.y = mag->magnetic.y;
-    latestIMUData_.magnetometer.z = mag->magnetic.z;
-    Logger::debug("Got new accelerometer, gyro and magnetometer values: [ %0.2f , %0.2f, %0.2f ] , [ %0.2f , %0.2f , %0.2f ] , [ %0.2f , %0.2f , %0.2f ]", 
-                                    latestIMUData_.accelerometer.x, latestIMUData_.accelerometer.y, latestIMUData_.accelerometer.z,
-                                    latestIMUData_.gyroscope.x, latestIMUData_.gyroscope.y, latestIMUData_.gyroscope.z,
-                                    latestIMUData_.magnetometer.x, latestIMUData_.magnetometer.y, latestIMUData_.magnetometer.z);
+    latestIMUData_.accelerometer.x = accel_event.acceleration.x;
+    latestIMUData_.accelerometer.y = accel_event.acceleration.y;
+    latestIMUData_.accelerometer.z = accel_event.acceleration.z;
+    latestIMUData_.gyroscope.x = gyro_event.gyro.x;
+    latestIMUData_.gyroscope.y = gyro_event.gyro.y;
+    latestIMUData_.gyroscope.z = gyro_event.gyro.z;
+    latestIMUData_.magnetometer.x = mag_event.magnetic.x;
+    latestIMUData_.magnetometer.y = mag_event.magnetic.y;
+    latestIMUData_.magnetometer.z = mag_event.magnetic.z;
 
+    Logger::debug("Got new accelerometer, gyro and magnetometer values: [ %0.2f , %0.2f, %0.2f ] , [ %0.2f , %0.2f , %0.2f ] , [ %0.2f , %0.2f , %0.2f ]",
+                  latestIMUData_.accelerometer.x, latestIMUData_.accelerometer.y, latestIMUData_.accelerometer.z,
+                  latestIMUData_.gyroscope.x, latestIMUData_.gyroscope.y, latestIMUData_.gyroscope.z,
+                  latestIMUData_.magnetometer.x, latestIMUData_.magnetometer.y, latestIMUData_.magnetometer.z);
 }
 
 void IMU::updateFilteredOrientation()
