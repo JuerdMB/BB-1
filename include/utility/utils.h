@@ -2,6 +2,16 @@
 
 #include <Arduino.h>
 
+template <typename T>
+struct Vector3
+{
+    Vector3(T x_in, T y_in, T z_in): x(x_in), y(y_in), z(z_in){}
+    Vector3(): x((T)0.), y((T)0.), z((T)0.){}
+    T x;
+    T y;
+    T z;
+};
+
 struct Orientation
 {
     Orientation(float roll_in, float pitch_in, float yaw_in) : roll(roll_in), pitch(pitch_in), yaw(yaw_in), timestamp(0){}
@@ -39,17 +49,7 @@ struct EncoderData
 
 struct ControlData
 {
-    ControlData() : linear(Vector3<float>()), angular(Vector3<float>()){}
     Vector3<float> linear;
     Vector3<float> angular;
 };
 
-template <typename T>
-struct Vector3
-{
-    Vector3(T x_in, T y_in, T z_in): x(x_in), y(y_in), z(z_in){}
-    Vector3(): x((T)0.), y((T)0.), z((T)0.){}
-    T x;
-    T y;
-    T z;
-};
