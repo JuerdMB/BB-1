@@ -1,6 +1,8 @@
 #pragma once
 
+#if defined(ARDUINO)
 #include <Arduino.h>
+#endif
 
 // ESP32 GPIO Pins
 constexpr uint8_t MOTOR_LEFT_A   = 36;
