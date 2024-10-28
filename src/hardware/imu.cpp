@@ -6,17 +6,9 @@
 #include "utility/Logger.h"
 #include "utility/shared_data.h"
 
-IMU::IMU() : icm_(Adafruit_ICM20948()), currentOrientation_(Orientation()), lastOrientationUpdate_(0)
+IMU::IMU() : icm_(Adafruit_ICM20948()), latestIMUData_(RawIMUdata()), currentOrientation_(Orientation()), 
+                    previousOrientation_(Orientation()),lastOrientationUpdate_(0)
 {
-    latestIMUData_.accelerometer.x = 0.;
-    latestIMUData_.accelerometer.y = 0.;
-    latestIMUData_.accelerometer.z = 0.;
-    latestIMUData_.gyroscope.x = 0.;
-    latestIMUData_.gyroscope.y = 0.;
-    latestIMUData_.gyroscope.z = 0.;
-    latestIMUData_.magnetometer.x = 0.;
-    latestIMUData_.magnetometer.y = 0.;
-    latestIMUData_.magnetometer.z = 0.;
 }
 
 bool IMU::init()

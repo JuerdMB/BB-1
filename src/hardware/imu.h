@@ -1,8 +1,10 @@
 #pragma once
 
+#if defined(ARDUINO)
 #include <Wire.h>
 #include <Adafruit_ICM20948.h>
 #include "utility/shared_data.h"
+#endif
 
 class IMU
 {
