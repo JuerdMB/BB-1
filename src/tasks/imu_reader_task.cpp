@@ -32,8 +32,8 @@ void imuReaderTask(void *parameters)
 
         // Obtain new data from sensor
         imu.retrieveRawData();
-        // imu.updateFilteredOrientation();
-        // imu.publishFilteredOrientation();
+        imu.updateFilteredOrientation();
+        imu.publishFilteredOrientation();
 
         // Delay task with configured duration
         vTaskDelay(100);
