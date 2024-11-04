@@ -27,6 +27,7 @@ constexpr uint16_t MOTION_CONTROL_FREQUENCY = 50;
 constexpr uint16_t ENCODER_READING_FREQUENCY = 100;
 
 // IMU
+// #define IMU_USE_INTERRUPT
 constexpr uint8_t ICM_INIT_MAX_RETRIES = 5;
 constexpr uint16_t ICM_INIT_FAILED_DELAY_MS = 1000;
 

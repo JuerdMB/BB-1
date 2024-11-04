@@ -1,12 +1,10 @@
 #pragma once
 
-#if defined(ARDUINO)
 #include <Wire.h>
 #include <Adafruit_ICM20948.h>
 #include "utility/shared_data.h"
-#endif
+#include "config.h"
 
-// #define IMU_USE_INTERRUPT
 
 enum IMU_INIT_ERROR {
     IMU_INIT_SUCCEEDED,
