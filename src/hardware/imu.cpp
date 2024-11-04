@@ -6,8 +6,7 @@
 #include "utility/Logger.h"
 #include "utility/shared_data.h"
 
-IMU::IMU() : icm_(Adafruit_ICM20948()), latestIMUData_(RawIMUdata()), currentOrientation_(Orientation()),
-             previousOrientation_(Orientation()), lastOrientationUpdate_(0)
+IMU::IMU() : icm_(Adafruit_ICM20948()), currentOrientation_(Orientation()), previousOrientation_(Orientation()), lastOrientationUpdate_(0)
 {
 }
 
@@ -56,34 +55,31 @@ int IMU::init()
     return true;
 }
 
-void IMU::retrieveRawData()
+int IMU::retrieveRawData(RawIMUdata &dataContainer)
 {
     // Update central accel, gyro, temperature and magnetometer values
     sensors_event_t accel_event, gyro_event, temp_event, mag_event;
     if (!icm_.getEvent(&accel_event, &gyro_event, &temp_event, &mag_event))
     {
         Logger::warn("unsuccesful read from ICM unsuccesful with [accel], [gyro], [temp], [mag]");
-        return;
+        return IMU_READ_FAILED;
     }
 
-    // Update central accel, gyro, temperature and magnetometer values
-    latestIMUData_.accelerometer.x = accel_event.acceleration.x;
-    latestIMUData_.accelerometer.y = accel_event.acceleration.y;
-    latestIMUData_.accelerometer.z = accel_event.acceleration.z;
-    latestIMUData_.gyroscope.x = gyro_event.gyro.x;
-    latestIMUData_.gyroscope.y = gyro_event.gyro.y;
-    latestIMUData_.gyroscope.z = gyro_event.gyro.z;
-    latestIMUData_.magnetometer.x = mag_event.magnetic.x;
-    latestIMUData_.magnetometer.y = mag_event.magnetic.y;
-    latestIMUData_.magnetometer.z = mag_event.magnetic.z;
+    // Store accel, gyro, temperature and magnetometer values
+    dataContainer.accelerometer.x = accel_event.acceleration.x;
+    dataContainer.accelerometer.y = accel_event.acceleration.y;
+    dataContainer.accelerometer.z = accel_event.acceleration.z;
+    dataContainer.gyroscope.x = gyro_event.gyro.x;
+    dataContainer.gyroscope.y = gyro_event.gyro.y;
+    dataContainer.gyroscope.z = gyro_event.gyro.z;
+    dataContainer.magnetometer.x = mag_event.magnetic.x;
+    dataContainer.magnetometer.y = mag_event.magnetic.y;
+    dataContainer.magnetometer.z = mag_event.magnetic.z;
 
-    Logger::debug("Got new accelerometer, gyro and magnetometer values: [ %0.2f , %0.2f, %0.2f ] , [ %0.2f , %0.2f , %0.2f ] , [ %0.2f , %0.2f , %0.2f ]",
-                  latestIMUData_.accelerometer.x, latestIMUData_.accelerometer.y, latestIMUData_.accelerometer.z,
-                  latestIMUData_.gyroscope.x, latestIMUData_.gyroscope.y, latestIMUData_.gyroscope.z,
-                  latestIMUData_.magnetometer.x, latestIMUData_.magnetometer.y, latestIMUData_.magnetometer.z);
+    return IMU_READ_SUCCESS;
 }
 
-void IMU::updateFilteredOrientation()
+void IMU::updateFilteredOrientation(RawIMUdata &rawIMUdata)
 {
     // // Calculate time interval since last measurement
     uint32_t now = micros();
@@ -91,10 +87,10 @@ void IMU::updateFilteredOrientation()
     lastOrientationUpdate_ = now;
 
     // Compute pitch in radians from accelerometers x and z
-    double pitch_accelerometers = atan2(latestIMUData_.accelerometer.x, latestIMUData_.accelerometer.z);
+    double pitch_accelerometers = atan2(rawIMUdata.accelerometer.x, rawIMUdata.accelerometer.z);
 
     // Compute yaw rate from gyro_y, assuming gyro rate from sensor is in rad/s
-    float pitch_rate = latestIMUData_.gyroscope.y * deltaTime * 1000000;
+    float pitch_rate = rawIMUdata.gyroscope.y * deltaTime * 1000000;
 
     // Combine with complementary filter.
     float pitch_filtered = (previousOrientation_.pitch + pitch_rate) * COMPLEMENTARY_FILTER_PITCH_ALPHA + pitch_accelerometers * (1.f - COMPLEMENTARY_FILTER_PITCH_ALPHA);

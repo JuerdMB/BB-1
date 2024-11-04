@@ -38,9 +38,20 @@ void imuReaderTask(void *parameters)
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         #endif
 
+        // Temporary container for raw IMU data
+        RawIMUdata rawIMUdata;
+
         // Obtain new data from sensor
-        imu.retrieveRawData();
-        imu.updateFilteredOrientation();
+        if(imu.retrieveRawData(rawIMUdata) != IMU_READ_SUCCESS){
+            break;
+        }
+
+        Logger::debug("Got new accelerometer, gyro and magnetometer values: [ %0.2f , %0.2f, %0.2f ] , [ %0.2f , %0.2f , %0.2f ] , [ %0.2f , %0.2f , %0.2f ]",
+                  rawIMUdata.accelerometer.x, rawIMUdata.accelerometer.y, rawIMUdata.accelerometer.z,
+                  rawIMUdata.gyroscope.x, rawIMUdata.gyroscope.y, rawIMUdata.gyroscope.z,
+                  rawIMUdata.magnetometer.x, rawIMUdata.magnetometer.y, rawIMUdata.magnetometer.z);
+
+        imu.updateFilteredOrientation(rawIMUdata);
         imu.publishFilteredOrientation();
 
         // Delay task with configured duration
