@@ -37,7 +37,7 @@ bool SharedData::sendOrientationData(Orientation orientationData)
     // Send to queue without blocking
     if (xQueueSend(orientation_data_queue_, &orientationData, 0) != pdPASS)
     {
-        LOG_WARN("SharedData - Orientation queue is full, data lost.");
+        LOG_DEBUG("SharedData - Orientation queue is full, removing from tail.");
         return false;
     }
     return true;
