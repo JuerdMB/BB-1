@@ -13,6 +13,7 @@ void balancingControllerTask(void *pvParameters)
         while (true)
         {
             // TODO: wait for dataReady with FreeRTOS
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
             Logger::debug("balancingControllerTask - BalanceController got new orientation data!");
 

@@ -1,10 +1,8 @@
 #pragma once
 
-#if defined(ARDUINO)
 #include "freertos/FreeRTOS.h"
 #include "freeRTOS/queue.h"
 #include "utility/utils.h"
-#endif
 
 class SharedData {
 public:
