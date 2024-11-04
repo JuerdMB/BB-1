@@ -13,11 +13,11 @@ bool PID::setGains(float kP, float kI, float kD)
         kI_ = kI;
         kD_ = kD;
 
-        Logger::debug("PID - PID gains succesfully set to %2f(kP), %2f(kI), %2f(kD)", kP, kI, kD);
+        LOG_DEBUG("PID - PID gains succesfully set to %2f(kP), %2f(kI), %2f(kD)", kP, kI, kD);
         return true;
     }
 
-    Logger::debug("PID - setGains unsuccesful: Invalid PID gains %2f(kP), %2f(kI), %2f(kD)", kP, kI, kD);
+    LOG_DEBUG("PID - setGains unsuccesful: Invalid PID gains %2f(kP), %2f(kI), %2f(kD)", kP, kI, kD);
     return false;
 }
 

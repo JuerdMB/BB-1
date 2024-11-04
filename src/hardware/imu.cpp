@@ -23,11 +23,11 @@ IMU_INIT_ERROR IMU::init()
 
         if (inited)
         {
-            Logger::info("IMU - ICM20948 Found after %d attempts!", retry_count+1);
+            LOG_INFO("IMU - ICM20948 Found after %d attempts!", retry_count+1);
             break;
         }
 
-        Logger::warn("IMU - Failed to find ICM20948 chip, attempt %d/%d", retry_count + 1, ICM_INIT_MAX_RETRIES);
+        LOG_WARN("IMU - Failed to find ICM20948 chip, attempt %d/%d", retry_count + 1, ICM_INIT_MAX_RETRIES);
         retry_count++;
 
         vTaskDelay(ICM_INIT_FAILED_DELAY_MS / portTICK_PERIOD_MS);
@@ -36,20 +36,20 @@ IMU_INIT_ERROR IMU::init()
     // Check final status
     if (!inited)
     {
-        Logger::error("IMU - IMU initialization failed after %d attempts", ICM_INIT_MAX_RETRIES);
+        LOG_ERROR("IMU - IMU initialization failed after %d attempts", ICM_INIT_MAX_RETRIES);
         return IMU_INIT_FAILED;
     }
 
     // Initialize accelerometer settings
     icm_.setAccelRange(ICM20948_ACCEL_RANGE_16_G);
-    Logger::info("IMU - Accelerometer range set to: %d", icm_.getAccelRange());
+    LOG_INFO("IMU - Accelerometer range set to: %d", icm_.getAccelRange());
 
     // If IMU_USE_INTERRUPT is defined, assign ISR to signal imu reader task upon new data availability
     #ifdef IMU_USE_INTERRUPT
         // Set up interrupt on IMU_INT_PIN
         pinMode(ICM_INTERRUPT, INPUT_PULLUP);
         attachInterrupt(digitalPinToInterrupt(ICM_INTERRUPT), imuInterruptHandler, RISING);
-        Logger::info("IMU - IMU interrupt set up on pin %d", ICM_INTERRUPT);
+        LOG_INFO("IMU - IMU interrupt set up on pin %d", ICM_INTERRUPT);
     #endif
 
     return IMU_INIT_SUCCEEDED;
@@ -61,7 +61,7 @@ IMU_READ_ERROR IMU::retrieveRawData(RawIMUdata &dataContainer)
     sensors_event_t accel_event, gyro_event, temp_event, mag_event;
     if (!icm_.getEvent(&accel_event, &gyro_event, &temp_event, &mag_event))
     {
-        Logger::warn("unsuccesful read from ICM unsuccesful with [accel], [gyro], [temp], [mag]");
+        LOG_WARN("unsuccesful read from ICM unsuccesful with [accel], [gyro], [temp], [mag]");
         return IMU_READ_FAILED;
     }
 

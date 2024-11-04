@@ -15,7 +15,7 @@ bool BalanceController::init()
     bool motorDriverInit = motor_driver_.init();
     if (motorDriverInit != true) // TODO -
     {
-        Logger::debug("BalanceController - Something wrong in MotorDriver initialization.");
+        LOG_DEBUG("BalanceController - Something wrong in MotorDriver initialization.");
         return false;
     }
 
@@ -26,7 +26,7 @@ bool BalanceController::init()
     if (!pid_speed_.setGains(0.f, 0.f, 0.f))
         return false;
 
-    Logger::debug("BalanceController - BalanceController succesfully inited.");
+    LOG_DEBUG("BalanceController - BalanceController succesfully inited.");
     return true;
 }
 

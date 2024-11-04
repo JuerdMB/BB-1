@@ -19,7 +19,7 @@ TaskHandle_t imuReadingTaskHandle = nullptr;
 
 void imuReaderTask(void *parameters)
 {
-    Logger::debug("imuReaderTask - Setting up imuReaderTask.");
+    LOG_DEBUG("Setting up imuReaderTask.");
 
     // Assign the current task to the task handler
     imuReadingTaskHandle = xTaskGetCurrentTaskHandle();
@@ -29,7 +29,7 @@ void imuReaderTask(void *parameters)
 
     if(imu.init() != IMU_INIT_SUCCEEDED){
         // IMU init failed, restart ESP and try again
-        Logger::error("IMU init failed, restarting ESP32.");
+        LOG_ERROR("IMU init failed, restarting ESP32.");
         ESP.restart();
     }
 
@@ -47,11 +47,11 @@ void imuReaderTask(void *parameters)
 
         // Obtain new data from sensor
         if(imu_read_result != IMU_READ_SUCCESS){
-            Logger::warn("IMU data read error: %d", (int)imu_read_result);
+            LOG_WARN("IMU data read error: %d", (int)imu_read_result);
             break;
         }
 
-        Logger::debug("Got new accelerometer, gyro and magnetometer values: [ %0.2f , %0.2f, %0.2f ] , [ %0.2f , %0.2f , %0.2f ] , [ %0.2f , %0.2f , %0.2f ]",
+        LOG_DEBUG("Got new accelerometer, gyro and magnetometer values: [ %0.2f , %0.2f, %0.2f ] , [ %0.2f , %0.2f , %0.2f ] , [ %0.2f , %0.2f , %0.2f ]",
                   rawIMUdata.accelerometer.x, rawIMUdata.accelerometer.y, rawIMUdata.accelerometer.z,
                   rawIMUdata.gyroscope.x, rawIMUdata.gyroscope.y, rawIMUdata.gyroscope.z,
                   rawIMUdata.magnetometer.x, rawIMUdata.magnetometer.y, rawIMUdata.magnetometer.z);
@@ -64,7 +64,6 @@ void imuReaderTask(void *parameters)
         // Send to freeRTOS queue and publish over ROS
         imu.publishFilteredOrientation(currentOrientation);
 
-        // Delay task with configured duration
         vTaskDelay(100);
     }
 }

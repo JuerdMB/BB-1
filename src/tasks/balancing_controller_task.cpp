@@ -5,7 +5,7 @@
 
 void balancingControllerTask(void *pvParameters)
 {
-    Logger::debug("balancingControllerTask - Setting up balancingControllerTask.");
+    LOG_DEBUG("balancingControllerTask - Setting up balancingControllerTask.");
 
     BalanceController BalanceController;
 
@@ -15,11 +15,11 @@ void balancingControllerTask(void *pvParameters)
             // TODO: wait for dataReady with FreeRTOS
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-            Logger::debug("balancingControllerTask - BalanceController got new orientation data!");
+            LOG_DEBUG("balancingControllerTask - BalanceController got new orientation data!");
 
             Orientation orientationData;
             if(!BalanceController.retrieveOrientationFromIMU(orientationData)){
-                Logger::warn("balancingControllerTask - No new orientation data received upon update.");
+                LOG_WARN("balancingControllerTask - No new orientation data received upon update.");
                 continue;
             }
 
@@ -37,6 +37,6 @@ void balancingControllerTask(void *pvParameters)
             vTaskDelay(1000);
         }
         else {
-            Logger::warn("Balance Controller failed to initialize with error code X");
+            LOG_WARN("Balance Controller failed to initialize with error code X");
         }
 }
