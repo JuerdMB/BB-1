@@ -1,6 +1,7 @@
 #include "motor_driver.h"
 #include "config.h"
 #include <Arduino.h>
+#include "utility/Logger.h"
 
 MotorDriver::MotorDriver()
 {
@@ -15,10 +16,42 @@ bool MotorDriver::init()
     return true;
 }
 
-void MotorDriver::setMotorSpeeds(float left, float right)
+void MotorDriver::setMotorSpeeds(int motorLeftSpeed, int motorRightSpeed)
 {
-    analogWrite(MOTOR_LEFT_A, left);
-    analogWrite(MOTOR_LEFT_B, left);
-    analogWrite(MOTOR_RIGHT_A, right);
-    analogWrite(MOTOR_RIGHT_B, right);
+    // Bounds checking
+    if (motorLeftSpeed < MOTORS_MIN_SPEED || motorLeftSpeed > MOTORS_MAX_SPEED)
+    {
+        int originalSpeed = motorLeftSpeed;
+        motorLeftSpeed = constrain(motorLeftSpeed, MOTORS_MIN_SPEED, MOTORS_MAX_SPEED);
+        Logger::info("BalanceController: Motor left speed out of bounds: %d, constraining to %d.", originalSpeed, motorLeftSpeed);
+    }
+
+    if (motorRightSpeed < MOTORS_MIN_SPEED || motorRightSpeed > MOTORS_MAX_SPEED)
+    {
+        int originalSpeed = motorRightSpeed;
+        motorRightSpeed = constrain(motorRightSpeed, MOTORS_MIN_SPEED, MOTORS_MAX_SPEED);
+        Logger::info("BalanceController: Motor right speed out of bounds: %d, constraining to %d.", originalSpeed, motorLeftSpeed);
+    }
+
+    if (motorLeftSpeed >= 0)
+    {
+        analogWrite(MOTOR_LEFT_A, motorLeftSpeed);
+        analogWrite(MOTOR_LEFT_B, 0);
+    }
+    else
+    {
+        analogWrite(MOTOR_LEFT_A, 0);
+        analogWrite(MOTOR_LEFT_B, abs(motorLeftSpeed));
+    }
+
+    if (motorRightSpeed >= 0)
+    {
+        analogWrite(MOTOR_RIGHT_A, motorRightSpeed);
+        analogWrite(MOTOR_RIGHT_B, 0);
+    }
+    else
+    {
+        analogWrite(MOTOR_RIGHT_A, 0);
+        analogWrite(MOTOR_RIGHT_B, abs(motorRightSpeed));
+    }
 }

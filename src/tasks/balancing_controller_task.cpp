@@ -17,19 +17,26 @@ void balancingControllerTask(void *pvParameters)
 
             Logger::debug("balancingControllerTask - BalanceController got new orientation data!");
 
-            Orientation OrientationData = BalanceController.retrieveOrientationFromIMU();
+            Orientation orientationData;
+            if(!BalanceController.retrieveOrientationFromIMU(orientationData)){
+                Logger::warn("balancingControllerTask - No new orientation data received upon update.");
+                continue;
+            }
 
-            // Error checking
-            // if(X){
-            //     // Handle the case where there is corrupt data or st
-            //     Logger::warn("balancingControllerTask - No new orientation data received upon update.");
-            // }
+            // Temporary values for motorSpeeds
+            int motorLeftSpeed = 0;
+            int motorRightSpeed = 0;
 
-            // // Always update motor speeds. Even when no IMU data is available, new heading might be available.
-            // BalanceController.updateMotorSpeeds();
-            // BalanceController.setMotorSpeeds();
+            // Always update motor speeds. Even when no IMU data is available, new heading might be available.
+            BalanceController.updateMotorSpeeds(orientationData, motorLeftSpeed, motorRightSpeed);
+
+            // Send motor speeds to motors
+            BalanceController.setMotorSpeeds(motorLeftSpeed, motorRightSpeed);
 
             // Delay task with configured duration
             vTaskDelay(1000);
+        }
+        else {
+            Logger::warn("Balance Controller failed to initialize with error code X");
         }
 }

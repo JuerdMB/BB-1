@@ -5,7 +5,7 @@ class MotorDriver
 public:
     MotorDriver();
     bool init();
-    void setMotorSpeeds(float left, float right);
+    void setMotorSpeeds(int motorLeftSpeed, int motorRightSpeed);
 
 private:
 };

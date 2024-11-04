@@ -9,12 +9,14 @@ class BalanceController
 public:
     BalanceController();
     bool init();
-    Orientation retrieveOrientationFromIMU();
-    void updateMotorSpeeds();
+    bool retrieveOrientationFromIMU(Orientation &orientationData);
+    void updateMotorSpeeds(Orientation &orientationData, int &motorLeftSpeed, int &motorRightSpeed);
+    void setMotorSpeeds(int motorLeftSpeed, int motorRightSpeed);
 
 private:
     MotorDriver motor_driver_;
     PID pid_balance_;
     PID pid_heading_;
     PID pid_speed_;
+    float pitch_setpoint_;
 };

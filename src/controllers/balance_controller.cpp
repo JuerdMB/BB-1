@@ -1,8 +1,11 @@
 #include "balance_controller.h"
 #include "hardware/motor_driver.h"
 #include "utility/Logger.h"
+#include "utility/shared_data.h"
+#include "config.h"
 
-BalanceController::BalanceController() : motor_driver_(MotorDriver()), pid_balance_(PID()), pid_heading_(PID()), pid_speed_(PID())
+BalanceController::BalanceController() : motor_driver_(MotorDriver()), pid_balance_(PID()), pid_heading_(PID()), 
+                                            pid_speed_(PID()), pitch_setpoint_(0.f)
 {
 }
 
@@ -27,12 +30,25 @@ bool BalanceController::init()
     return true;
 }
 
-Orientation BalanceController::retrieveOrientationFromIMU()
+bool BalanceController::retrieveOrientationFromIMU(Orientation &orientationData)
 {
-    Orientation orientationData;
-    return orientationData;
+    // Attempt to read from queue
+    bool success = SharedData::receiveOrientationData(&orientationData);
+
+    return success;
 }
 
-void BalanceController::updateMotorSpeeds()
+void BalanceController::updateMotorSpeeds(Orientation &orientationData, int &motorLeftSpeed, int &motorRightSpeed)
 {
+    float pitchSpeedComponent = pid_balance_.compute(orientationData.pitch, pitch_setpoint_);
+
+    // Temporarily simply assign pitch correction to motor speed components
+    motorLeftSpeed = pitchSpeedComponent;
+    motorRightSpeed = pitchSpeedComponent;
+}
+
+void BalanceController::setMotorSpeeds(int motorLeftSpeed, int motorRightSpeed){
+
+    motor_driver_.setMotorSpeeds(motorLeftSpeed, motorRightSpeed);
+
 }

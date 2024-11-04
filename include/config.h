@@ -43,3 +43,7 @@ constexpr uint16_t TASK_STACK_SIZE = 4096;
 
 // Physical constants
 constexpr float WHEEL_BASE = 0.15f; // Distance between wheels in meters
+
+// Motor constants
+constexpr int MOTORS_MIN_SPEED = -255;
+constexpr int MOTORS_MAX_SPEED = 255;
