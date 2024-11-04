@@ -11,7 +11,7 @@ IMU::IMU() : icm_(Adafruit_ICM20948()), latestIMUData_(RawIMUdata()), currentOri
 {
 }
 
-bool IMU::init()
+int IMU::init()
 {
     uint8_t retry_count = 0;
     bool inited = false;

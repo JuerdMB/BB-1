@@ -8,11 +8,16 @@
 
 // #define IMU_USE_INTERRUPT
 
+enum IMU_ERROR_CODE {
+    IMU_INIT_SUCCEEDED,
+    IMU_INIT_FAILED,
+}; 
+
 class IMU
 {
 public:
     IMU();
-    bool init();
+    int init();
     void retrieveRawData();
     void updateFilteredOrientation();
     void publishFilteredOrientation();

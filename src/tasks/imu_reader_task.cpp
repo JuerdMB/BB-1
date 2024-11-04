@@ -24,9 +24,12 @@ void imuReaderTask(void *parameters)
     // Assign the current task to the task handler
     imuReadingTaskHandle = xTaskGetCurrentTaskHandle();
 
-    // Create and init IMU Object, this also sets up the IMU interrupt handler
+    // Create and init IMU Object, this also sets up the IMU interrupt handler if IMU_USE_INTERRUPT is set
     IMU imu;
-    imu.init();
+    if(imu.init() == IMU_INIT_FAILED){
+        // IMU init failed, restart ESP and try again
+        ESP.restart();
+    }
 
     while (true)
     {
