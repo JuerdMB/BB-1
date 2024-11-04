@@ -26,8 +26,10 @@ void imuReaderTask(void *parameters)
 
     // Create and init IMU Object, this also sets up the IMU interrupt handler if IMU_USE_INTERRUPT is set
     IMU imu;
-    if(imu.init() == IMU_INIT_FAILED){
+
+    if(imu.init() != IMU_INIT_SUCCEEDED){
         // IMU init failed, restart ESP and try again
+        Logger::error("IMU init failed, restarting ESP32.");
         ESP.restart();
     }
 
@@ -41,8 +43,11 @@ void imuReaderTask(void *parameters)
         // Temporary container for raw IMU data
         RawIMUdata rawIMUdata;
 
+        IMU_READ_ERROR imu_read_result = imu.retrieveRawData(rawIMUdata);
+
         // Obtain new data from sensor
-        if(imu.retrieveRawData(rawIMUdata) != IMU_READ_SUCCESS){
+        if(imu_read_result != IMU_READ_SUCCESS){
+            Logger::warn("IMU data read error: %d", (int)imu_read_result);
             break;
         }
 

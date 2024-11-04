@@ -20,8 +20,8 @@ class IMU
 {
 public:
     IMU();
-    int init();
-    int retrieveRawData(RawIMUdata &dataContainer);
+    IMU_INIT_ERROR init();
+    IMU_READ_ERROR retrieveRawData(RawIMUdata &dataContainer);
     void updateFilteredOrientation(RawIMUdata &rawIMUdata, Orientation &currentOrientation);
     void publishFilteredOrientation(Orientation &currentOrientation);
 

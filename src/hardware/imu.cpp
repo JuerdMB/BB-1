@@ -10,7 +10,7 @@ IMU::IMU() : icm_(Adafruit_ICM20948()), previousOrientation_(Orientation()), las
 {
 }
 
-int IMU::init()
+IMU_INIT_ERROR IMU::init()
 {
     uint8_t retry_count = 0;
     bool inited = false;
@@ -37,7 +37,7 @@ int IMU::init()
     if (!inited)
     {
         Logger::error("IMU - IMU initialization failed after %d attempts", ICM_INIT_MAX_RETRIES);
-        return false;
+        return IMU_INIT_FAILED;
     }
 
     // Initialize accelerometer settings
@@ -52,10 +52,10 @@ int IMU::init()
         Logger::info("IMU - IMU interrupt set up on pin %d", ICM_INTERRUPT);
     #endif
 
-    return true;
+    return IMU_INIT_SUCCEEDED;
 }
 
-int IMU::retrieveRawData(RawIMUdata &dataContainer)
+IMU_READ_ERROR IMU::retrieveRawData(RawIMUdata &dataContainer)
 {
     // Update central accel, gyro, temperature and magnetometer values
     sensors_event_t accel_event, gyro_event, temp_event, mag_event;
