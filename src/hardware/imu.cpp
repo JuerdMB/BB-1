@@ -19,6 +19,7 @@ bool IMU::init()
     // Retry initialization until success or max retries exceeded
     while (retry_count < ICM_INIT_MAX_RETRIES && !inited)
     {
+        // Attempt to init sensor
         inited = icm_.begin_SPI(ICM_CS, ICM_SCK, ICM_MISO, ICM_MOSI);
 
         if (inited)
@@ -30,17 +31,13 @@ bool IMU::init()
         Logger::warn("IMU - Failed to find ICM20948 chip, attempt %d/%d", retry_count + 1, ICM_INIT_MAX_RETRIES);
         retry_count++;
 
-        // Wait 1 second
         vTaskDelay(ICM_INIT_FAILED_DELAY_MS / portTICK_PERIOD_MS);
     }
 
     // Check final status
     if (!inited)
     {
-        // Handle error case after all retries
         Logger::error("IMU - IMU initialization failed after %d attempts", ICM_INIT_MAX_RETRIES);
-
-        // Return error code
         return false;
     }
 
@@ -48,11 +45,10 @@ bool IMU::init()
     icm_.setAccelRange(ICM20948_ACCEL_RANGE_16_G);
     Logger::info("IMU - Accelerometer range set to: %d", icm_.getAccelRange());
 
-    // Set up interrupt on IMU_INT_PIN
-    pinMode(ICM_INTERRUPT, INPUT_PULLUP);
-
     // If IMU_USE_INTERRUPT is defined, assign ISR to signal imu reader task upon new data availability
     #ifdef IMU_USE_INTERRUPT
+        // Set up interrupt on IMU_INT_PIN
+        pinMode(ICM_INTERRUPT, INPUT_PULLUP);
         attachInterrupt(digitalPinToInterrupt(ICM_INTERRUPT), imuInterruptHandler, RISING);
         Logger::info("IMU - IMU interrupt set up on pin %d", ICM_INTERRUPT);
     #endif
