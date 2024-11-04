@@ -76,10 +76,10 @@ void setup()
     //     0 // Core 0
     // );
 
+    // Delete setup and loop tasks
     vTaskDelete(NULL);
 }
 
 void loop()
 {
-    vTaskDelete(NULL);
 }
