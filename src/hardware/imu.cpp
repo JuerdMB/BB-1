@@ -50,8 +50,12 @@ bool IMU::init()
 
     // Set up interrupt on IMU_INT_PIN
     pinMode(ICM_INTERRUPT, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(ICM_INTERRUPT), imuInterruptHandler, RISING);
-    Logger::info("IMU - IMU interrupt set up on pin %d", ICM_INTERRUPT);
+
+    // If IMU_USE_INTERRUPT is defined, assign ISR to signal imu reader task upon new data availability
+    #ifdef IMU_USE_INTERRUPT
+        attachInterrupt(digitalPinToInterrupt(ICM_INTERRUPT), imuInterruptHandler, RISING);
+        Logger::info("IMU - IMU interrupt set up on pin %d", ICM_INTERRUPT);
+    #endif
 
     return true;
 }

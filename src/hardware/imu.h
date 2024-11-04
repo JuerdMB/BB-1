@@ -6,6 +6,8 @@
 #include "utility/shared_data.h"
 #endif
 
+// #define IMU_USE_INTERRUPT
+
 class IMU
 {
 public:

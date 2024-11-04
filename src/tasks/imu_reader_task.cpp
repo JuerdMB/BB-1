@@ -5,7 +5,11 @@
 
 void IRAM_ATTR imuInterruptHandler() {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    // Notify the imu reading task that new data if available
     vTaskNotifyGiveFromISR(imuReadingTaskHandle, &xHigherPriorityTaskWoken);
+
+    // Perform a context switch to imu reader task if no higher priority task is ready
     if (xHigherPriorityTaskWoken == pdTRUE) {
         portYIELD_FROM_ISR();
     }
@@ -27,8 +31,9 @@ void imuReaderTask(void *parameters)
     while (true)
     {
         // Wait for notification from ISR
-        // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-        Logger::debug("imuReaderTask - Got new IMU data.");
+        #ifdef IMU_USE_INTERRUPT
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        #endif
 
         // Obtain new data from sensor
         imu.retrieveRawData();
