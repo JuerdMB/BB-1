@@ -51,8 +51,13 @@ void imuReaderTask(void *parameters)
                   rawIMUdata.gyroscope.x, rawIMUdata.gyroscope.y, rawIMUdata.gyroscope.z,
                   rawIMUdata.magnetometer.x, rawIMUdata.magnetometer.y, rawIMUdata.magnetometer.z);
 
-        imu.updateFilteredOrientation(rawIMUdata);
-        imu.publishFilteredOrientation();
+        Orientation currentOrientation;
+
+        // Calculate new orientation based on raw IMU data
+        imu.updateFilteredOrientation(rawIMUdata, currentOrientation);
+
+        // Send to freeRTOS queue and publish over ROS
+        imu.publishFilteredOrientation(currentOrientation);
 
         // Delay task with configured duration
         vTaskDelay(100);

@@ -24,12 +24,11 @@ public:
     IMU();
     int init();
     int retrieveRawData(RawIMUdata &dataContainer);
-    void updateFilteredOrientation(RawIMUdata &rawIMUdata);
-    void publishFilteredOrientation();
+    void updateFilteredOrientation(RawIMUdata &rawIMUdata, Orientation &currentOrientation);
+    void publishFilteredOrientation(Orientation &currentOrientation);
 
 private:
     Adafruit_ICM20948 icm_;
-    Orientation currentOrientation_;
     Orientation previousOrientation_;
     uint32_t lastOrientationUpdate_;
 };

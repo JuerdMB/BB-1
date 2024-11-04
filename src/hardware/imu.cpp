@@ -6,7 +6,7 @@
 #include "utility/Logger.h"
 #include "utility/shared_data.h"
 
-IMU::IMU() : icm_(Adafruit_ICM20948()), currentOrientation_(Orientation()), previousOrientation_(Orientation()), lastOrientationUpdate_(0)
+IMU::IMU() : icm_(Adafruit_ICM20948()), previousOrientation_(Orientation()), lastOrientationUpdate_(0)
 {
 }
 
@@ -79,7 +79,7 @@ int IMU::retrieveRawData(RawIMUdata &dataContainer)
     return IMU_READ_SUCCESS;
 }
 
-void IMU::updateFilteredOrientation(RawIMUdata &rawIMUdata)
+void IMU::updateFilteredOrientation(RawIMUdata &rawIMUdata, Orientation &currentOrientation)
 {
     // // Calculate time interval since last measurement
     uint32_t now = micros();
@@ -95,17 +95,17 @@ void IMU::updateFilteredOrientation(RawIMUdata &rawIMUdata)
     // Combine with complementary filter.
     float pitch_filtered = (previousOrientation_.pitch + pitch_rate) * COMPLEMENTARY_FILTER_PITCH_ALPHA + pitch_accelerometers * (1.f - COMPLEMENTARY_FILTER_PITCH_ALPHA);
 
-    // Update previous orientation
-    previousOrientation_ = currentOrientation_;
-
     // Update orientation
-    currentOrientation_.pitch = pitch_filtered;
+    currentOrientation.pitch = pitch_filtered;
+
+    // Store current orientation for next calculation
+    previousOrientation_ = currentOrientation;
 }
 
-void IMU::publishFilteredOrientation()
+void IMU::publishFilteredOrientation(Orientation &currentOrientation)
 {
     // Publish to FreeRTOS queue
-    SharedData::sendOrientationData(currentOrientation_);
+    SharedData::sendOrientationData(currentOrientation);
 
     // Publish over ROS2
     // rosNode.publishOrientation(orientation);
