@@ -35,7 +35,7 @@ void SharedData::init()
 bool SharedData::sendOrientationData(Orientation orientationData)
 {
     // Send to queue without blocking
-    if (xQueueSend(orientation_data_queue_, &orientationData, portMAX_DELAY) != pdPASS)
+    if (xQueueSend(orientation_data_queue_, &orientationData, 0) != pdPASS)
     {
         Logger::warn("SharedData - Orientation queue is full, data lost.");
         return false;
@@ -45,7 +45,7 @@ bool SharedData::sendOrientationData(Orientation orientationData)
 
 bool SharedData::receiveOrientationData(Orientation *orientationData)
 {
-    if (xQueueReceive(orientation_data_queue_, orientationData, portMAX_DELAY) != pdPASS)
+    if (xQueueReceive(orientation_data_queue_, orientationData, 0) != pdPASS)
     {
         Logger::debug("SharedData - No orientation data available in queue.");
         return false;
