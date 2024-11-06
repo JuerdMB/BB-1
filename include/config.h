@@ -47,7 +47,7 @@ constexpr uint8_t IMU_READER_TASK_PRIORITY = 6;
 constexpr uint8_t MOTION_CONTROLLER_TASK_PRIORITY = 3;
 constexpr uint8_t ENCODER_READING_TASK_PRIORITY = 3;
 constexpr uint8_t COMMUNICATION_TASK_PRIORITY = 2;
-constexpr uint8_t DIAGNOSTICS_TASK_PRIORITY = 1;
+constexpr uint8_t LOGGER_TASK_PRIORITY = 1;
 
 // Task stack sizes
 constexpr uint16_t TASK_STACK_SIZE = 4096;

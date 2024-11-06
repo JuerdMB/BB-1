@@ -36,7 +36,7 @@ void setup()
         "Diagnostics Task",
         TASK_STACK_SIZE,
         nullptr,
-        DIAGNOSTICS_TASK_PRIORITY,
+        LOGGER_TASK_PRIORITY,
         nullptr,
         COMM_CORE
     );
