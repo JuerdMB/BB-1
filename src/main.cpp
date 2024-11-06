@@ -9,6 +9,9 @@
 #include "tasks/motion_controller_task.h"
 #include "tasks/logger_task.h"
 
+TaskHandle_t imuReadingTaskHandle = nullptr;
+TaskHandle_t balanceControllerTaskHandle = nullptr;
+
 void setup()
 {
     Serial.begin(115200);
@@ -25,31 +28,21 @@ void setup()
         imuReaderTask,
         "IMU Reading Task",
         TASK_STACK_SIZE,
-        nullptr,
+        (void *) &balanceControllerTaskHandle,
         IMU_READER_TASK_PRIORITY,
         nullptr,
         MAIN_CORE
     );
 
     xTaskCreatePinnedToCore(
-        loggerTask,
-        "Diagnostics Task",
+        balancingControllerTask,
+        "Balancing Controller Task",
         TASK_STACK_SIZE,
         nullptr,
-        LOGGER_TASK_PRIORITY,
-        nullptr,
-        COMM_CORE
+        BALANCING_CONTROLLER_TASK_PRIORITY,
+        &balanceControllerTaskHandle,
+        MAIN_CORE
     );
-
-    // xTaskCreatePinnedToCore(
-    //     balancingControllerTask,
-    //     "Balancing Controller Task",
-    //     TASK_STACK_SIZE,
-    //     nullptr,
-    //     BALANCING_CONTROLLER_TASK_PRIORITY,
-    //     nullptr,
-    //     MAIN_CORE
-    // );
 
     // xTaskCreatePinnedToCore(
     //     motionControllerTask,
@@ -70,6 +63,16 @@ void setup()
     //     nullptr,
     //     MAIN_CORE
     // );
+
+    xTaskCreatePinnedToCore(
+        loggerTask,
+        "Diagnostics Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        LOGGER_TASK_PRIORITY,
+        nullptr,
+        COMM_CORE
+    );
 
     // xTaskCreatePinnedToCore(
     //     communicationTask,
