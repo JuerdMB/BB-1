@@ -10,6 +10,7 @@ void balancingControllerTask(void *pvParameters)
     BalanceController BalanceController;
 
     if (BalanceController.init() == true)
+    {
         while (true)
         {
             // TODO: wait for dataReady with FreeRTOS
@@ -18,7 +19,8 @@ void balancingControllerTask(void *pvParameters)
             LOG_DEBUG("balancingControllerTask - BalanceController got new orientation data!");
 
             Orientation orientationData;
-            if(!BalanceController.retrieveOrientationFromIMU(orientationData)){
+            if (!BalanceController.retrieveOrientationFromIMU(orientationData))
+            {
                 LOG_WARN("balancingControllerTask - No new orientation data received upon update.");
                 continue;
             }
@@ -32,11 +34,12 @@ void balancingControllerTask(void *pvParameters)
 
             // Send motor speeds to motors
             BalanceController.setMotorSpeeds(motorLeftSpeed, motorRightSpeed);
+        }
+    }
 
-            // Delay task with configured duration
-            vTaskDelay(1000);
-        }
-        else {
-            LOG_WARN("Balance Controller failed to initialize with error code X");
-        }
+    else
+    {
+        LOG_WARN("Balance Controller failed to initialize with error code X");
+        vTaskDelete(NULL);
+    }
 }
