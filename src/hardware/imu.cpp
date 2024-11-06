@@ -102,11 +102,15 @@ void IMU::updateFilteredOrientation(RawIMUdata &rawIMUdata, Orientation &current
     previousOrientation_ = currentOrientation;
 }
 
-void IMU::publishFilteredOrientation(Orientation &currentOrientation)
+bool IMU::publishFilteredOrientation(Orientation &currentOrientation)
 {
     // Publish to FreeRTOS queue
-    SharedData::sendOrientationData(currentOrientation);
+    bool success = false;
+
+    if(SharedData::sendOrientationData(currentOrientation) == true) success = true;
 
     // Publish over ROS2
     // rosNode.publishOrientation(orientation);
+
+    return success;
 }
