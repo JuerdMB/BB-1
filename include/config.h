@@ -17,6 +17,8 @@ constexpr uint8_t ICM_INTERRUPT     = 13;
 
 // Logging
 constexpr uint8_t DEFAULT_LOG_LEVEL = 0;
+constexpr uint16_t LOGGER_MESSAGE_QUEUE_SIZE = 100; // Size of message buffer
+constexpr TickType_t LOGGER_ENQUEUE_TIMEOUT = 0;    // How many ticks to wait before discarting the message when queue is full
 
 // Orientation Filtering Constants
 constexpr float COMPLEMENTARY_FILTER_PITCH_ALPHA = .05;

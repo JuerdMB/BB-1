@@ -15,9 +15,19 @@ enum LogLevel
     LOG_LEVEL_ERROR
 };
 
+struct LogMessage
+{
+    unsigned long timestamp;
+    LogLevel level;
+    char levelStr[10];
+    char fileName[100];
+    char message[256];
+};
+
 class Logger
 {
 public:
+    void init();
     static void setLogLevel(LogLevel level);
 
     // Logging methods with variadic arguments
@@ -27,8 +37,12 @@ public:
     static void error(const char *fileName, const char *format, ...);
 
 private:
+    // Queue that holds all log messages
+    static QueueHandle_t message_queue_;
+
     static LogLevel logLevel;
 
     // Helper method to format and print messages
-    static void logMessage(LogLevel level, const char *levelStr, const char *fileName, const char *format, va_list args);
+    static void enqueueMessage(LogLevel level, const char *levelStr, const char *fileName, const char *format, va_list args);
+    static void loggerTask(void* parameters);
 };
