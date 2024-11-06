@@ -9,10 +9,19 @@ MotorDriver::MotorDriver()
 
 bool MotorDriver::init()
 {
+    if( !GPIO_IS_VALID_OUTPUT_GPIO(MOTOR_LEFT_A) || !GPIO_IS_VALID_OUTPUT_GPIO(MOTOR_LEFT_B) || !GPIO_IS_VALID_OUTPUT_GPIO(MOTOR_RIGHT_A) || !GPIO_IS_VALID_OUTPUT_GPIO(MOTOR_RIGHT_B)  )
+    {
+        LOG_ERROR("MotorDriver GPIO pins incorrectly set");
+        return false;
+    }
+
     pinMode(MOTOR_LEFT_A, OUTPUT);
     pinMode(MOTOR_LEFT_B, OUTPUT);
     pinMode(MOTOR_RIGHT_A, OUTPUT);
     pinMode(MOTOR_RIGHT_B, OUTPUT);
+
+    LOG_DEBUG("Motor pins initialized to %d [L_A], %d [L_B], %d [R_A], %d [R_B]", MOTOR_LEFT_A, MOTOR_LEFT_B, MOTOR_RIGHT_A, MOTOR_RIGHT_B);
+
     return true;
 }
 
