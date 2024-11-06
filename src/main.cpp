@@ -1,21 +1,26 @@
 #include <Arduino.h>
 #include "config.h"
 #include "utility/shared_data.h"
+#include "utility/Logger.h"
+
 #include "tasks/balancing_controller_task.h"
 #include "tasks/communication_task.h"
-#include "tasks/diagnostics_task.h"
-#include "tasks/encoder_reader_task.h"
 #include "tasks/imu_reader_task.h"
 #include "tasks/motion_controller_task.h"
+#include "tasks/logger_task.h"
 
 void setup()
 {
     Serial.begin(115200);
 
-    // Initialize Shared Data Queues
-    SharedData::init();
+    // Wait for serial connection to start
+    vTaskDelay(START_DELAY);
 
-    // Create tasks
+    // Initialize SharedData and Logger queues
+    SharedData::init();
+    Logger::init();
+
+    // Tasks
     xTaskCreatePinnedToCore(
         imuReaderTask,
         "IMU Reading Task",
@@ -23,7 +28,17 @@ void setup()
         nullptr,
         IMU_READER_TASK_PRIORITY,
         nullptr,
-        1 // Core 1
+        MAIN_CORE
+    );
+
+    xTaskCreatePinnedToCore(
+        loggerTask,
+        "Diagnostics Task",
+        TASK_STACK_SIZE,
+        nullptr,
+        DIAGNOSTICS_TASK_PRIORITY,
+        nullptr,
+        COMM_CORE
     );
 
     // xTaskCreatePinnedToCore(
@@ -33,7 +48,7 @@ void setup()
     //     nullptr,
     //     BALANCING_CONTROLLER_TASK_PRIORITY,
     //     nullptr,
-    //     1 // Core 1
+    //     MAIN_CORE
     // );
 
     // xTaskCreatePinnedToCore(
@@ -43,7 +58,7 @@ void setup()
     //     nullptr,
     //     MOTION_CONTROLLER_TASK_PRIORITY,
     //     nullptr,
-    //     0 // Core 0
+    //     MAIN_CORE
     // );
 
     // xTaskCreatePinnedToCore(
@@ -53,7 +68,7 @@ void setup()
     //     nullptr,
     //     ENCODER_READING_TASK_PRIORITY,
     //     nullptr,
-    //     0 // Core 0
+    //     MAIN_CORE
     // );
 
     // xTaskCreatePinnedToCore(
@@ -63,17 +78,7 @@ void setup()
     //     nullptr,
     //     COMMUNICATION_TASK_PRIORITY,
     //     nullptr,
-    //     0 // Core 0
-    // );
-
-    // xTaskCreatePinnedToCore(
-    //     diagnosticsTask,
-    //     "Diagnostics Task",
-    //     TASK_STACK_SIZE,
-    //     nullptr,
-    //     DIAGNOSTICS_TASK_PRIORITY,
-    //     nullptr,
-    //     0 // Core 0
+    //     COMM_CORE
     // );
 
     // Delete setup and loop tasks

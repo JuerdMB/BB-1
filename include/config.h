@@ -4,6 +4,13 @@
 #include <Arduino.h>
 #endif
 
+// Startup
+constexpr TickType_t START_DELAY =  pdMS_TO_TICKS(500);
+
+// ESP32 Cores
+constexpr BaseType_t MAIN_CORE = 0; // This core does all the heavy lifting
+constexpr BaseType_t COMM_CORE = 1; // This core takes care of less time sensitive work
+
 // ESP32 GPIO Pins
 constexpr uint8_t MOTOR_LEFT_A   = 36;
 constexpr uint8_t MOTOR_LEFT_B   = 39;
@@ -19,6 +26,7 @@ constexpr uint8_t ICM_INTERRUPT     = 13;
 constexpr uint8_t DEFAULT_LOG_LEVEL = 0;
 constexpr uint16_t LOGGER_MESSAGE_QUEUE_SIZE = 100; // Size of message buffer
 constexpr TickType_t LOGGER_ENQUEUE_TIMEOUT = 0;    // How many ticks to wait before discarting the message when queue is full
+constexpr TickType_t LOGGER_READ_TIMEOUT = portMAX_DELAY;    // Wait duration when queue is empty
 
 // Orientation Filtering Constants
 constexpr float COMPLEMENTARY_FILTER_PITCH_ALPHA = .05;

@@ -27,7 +27,7 @@ struct LogMessage
 class Logger
 {
 public:
-    void init();
+    static void init();
     static void setLogLevel(LogLevel level);
 
     // Logging methods with variadic arguments
@@ -35,11 +35,13 @@ public:
     static void info(const char *fileName, const char *format, ...);
     static void warn(const char *fileName, const char *format, ...);
     static void error(const char *fileName, const char *format, ...);
-
-private:
+    
     // Queue that holds all log messages
     static QueueHandle_t message_queue_;
 
+
+private:
+    
     static LogLevel logLevel;
 
     // Helper method to format and print messages
