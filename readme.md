@@ -110,7 +110,7 @@ BB-1
 │   ├── utils.h
 │   ├── tasks
 │   │   ├── imuReadingTask.h
-│   │   └── balancingControllerTask.h
+│   │   └── motionControllerTask.h
 │   └── utility
 │       ├── Logger.h
 │       └── shared_data.h
@@ -119,7 +119,7 @@ BB-1
     ├── main.cpp
     ├── tasks
     │   ├── imuReadingTask.cpp
-    │   └── balancingControllerTask.cpp
+    │   └── motionControllerTask.cpp
     └── utility
         ├── Logger.cpp
         └── shared_data.cpp
@@ -137,7 +137,7 @@ BB-1
   - **PID.h**: Implements the PID control algorithm.
 - **Tasks**:
   - **imuReadingTask**: Reads sensor data and updates orientation.
-  - **balancingControllerTask**: Adjusts motor speeds to maintain balance.
+  - **motionControllerTask**: Adjusts motor speeds to maintain balance.
 - **Utility**:
   - **Logger**: Provides logging functionality with various log levels.
   - **shared_data**: Manages shared data between tasks using FreeRTOS queues.

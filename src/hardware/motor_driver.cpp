@@ -32,14 +32,14 @@ void MotorDriver::setMotorSpeeds(int motorLeftSpeed, int motorRightSpeed)
     {
         int originalSpeed = motorLeftSpeed;
         motorLeftSpeed = constrain(motorLeftSpeed, MOTORS_MIN_SPEED, MOTORS_MAX_SPEED);
-        LOG_INFO("BalanceController: Motor left speed out of bounds: %d, constraining to %d.", originalSpeed, motorLeftSpeed);
+        LOG_INFO("motionController: Motor left speed out of bounds: %d, constraining to %d.", originalSpeed, motorLeftSpeed);
     }
 
     if (motorRightSpeed < MOTORS_MIN_SPEED || motorRightSpeed > MOTORS_MAX_SPEED)
     {
         int originalSpeed = motorRightSpeed;
         motorRightSpeed = constrain(motorRightSpeed, MOTORS_MIN_SPEED, MOTORS_MAX_SPEED);
-        LOG_INFO("BalanceController: Motor right speed out of bounds: %d, constraining to %d.", originalSpeed, motorLeftSpeed);
+        LOG_INFO("motionController: Motor right speed out of bounds: %d, constraining to %d.", originalSpeed, motorLeftSpeed);
     }
 
     if (motorLeftSpeed >= 0)

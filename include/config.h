@@ -42,7 +42,6 @@ constexpr uint8_t ICM_INIT_MAX_RETRIES = 15;
 constexpr uint16_t ICM_INIT_FAILED_DELAY_MS = 2000;
 
 // Task priorities
-constexpr uint8_t BALANCING_CONTROLLER_TASK_PRIORITY = 5;
 constexpr uint8_t IMU_READER_TASK_PRIORITY = 6;
 constexpr uint8_t MOTION_CONTROLLER_TASK_PRIORITY = 3;
 constexpr uint8_t ENCODER_READING_TASK_PRIORITY = 3;

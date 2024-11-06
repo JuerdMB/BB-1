@@ -1,3 +1,3 @@
 #pragma once
 
-void motionControllerTask(void* parameters);
+void motionControllerTask(void* pvParameters);

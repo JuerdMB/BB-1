@@ -3,14 +3,13 @@
 #include "utility/shared_data.h"
 #include "utility/Logger.h"
 
-#include "tasks/balancing_controller_task.h"
 #include "tasks/communication_task.h"
 #include "tasks/imu_reader_task.h"
 #include "tasks/motion_controller_task.h"
 #include "tasks/logger_task.h"
 
 TaskHandle_t imuReadingTaskHandle = nullptr;
-TaskHandle_t balanceControllerTaskHandle = nullptr;
+TaskHandle_t motionControllerTaskHandle = nullptr;
 
 void setup()
 {
@@ -28,19 +27,19 @@ void setup()
         imuReaderTask,
         "IMU Reading Task",
         TASK_STACK_SIZE,
-        (void *) &balanceControllerTaskHandle,
+        (void *) &motionControllerTaskHandle,
         IMU_READER_TASK_PRIORITY,
         nullptr,
         MAIN_CORE
     );
 
     xTaskCreatePinnedToCore(
-        balancingControllerTask,
+        motionControllerTask,
         "Balancing Controller Task",
         TASK_STACK_SIZE,
         nullptr,
-        BALANCING_CONTROLLER_TASK_PRIORITY,
-        &balanceControllerTaskHandle,
+        MOTION_CONTROLLER_TASK_PRIORITY,
+        &motionControllerTaskHandle,
         MAIN_CORE
     );
 

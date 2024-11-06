@@ -20,7 +20,7 @@ void imuReaderTask(void *parameters)
     LOG_DEBUG("Setting up imuReaderTask.");
 
     // Assign the 
-    TaskHandle_t balanceControllerTaskHandle = * ((TaskHandle_t *) parameters);
+    TaskHandle_t motionControllerTaskHandle = * ((TaskHandle_t *) parameters);
 
     // Create and init IMU Object, this also sets up the IMU interrupt handler if IMU_USE_INTERRUPT is set
     IMU imu;
@@ -61,7 +61,7 @@ void imuReaderTask(void *parameters)
 
         // Send to freeRTOS queue and publish over ROS
         if(imu.publishFilteredOrientation(currentOrientation)){
-            xTaskNotifyGive(balanceControllerTaskHandle);
+            xTaskNotifyGive(motionControllerTaskHandle);
         }
 
         vTaskDelay(100);
