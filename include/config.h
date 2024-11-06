@@ -12,10 +12,10 @@ constexpr BaseType_t MAIN_CORE = 0; // This core does all the heavy lifting
 constexpr BaseType_t COMM_CORE = 1; // This core takes care of less time sensitive work
 
 // ESP32 GPIO Pins
-constexpr uint8_t MOTOR_LEFT_A   = 36;
-constexpr uint8_t MOTOR_LEFT_B   = 39;
-constexpr uint8_t MOTOR_RIGHT_A   = 34;
-constexpr uint8_t MOTOR_RIGHT_B   = 35;
+constexpr uint8_t MOTOR_LEFT_A      = 36;
+constexpr uint8_t MOTOR_LEFT_B      = 39;
+constexpr uint8_t MOTOR_RIGHT_A     = 34;
+constexpr uint8_t MOTOR_RIGHT_B     = 35;
 constexpr uint8_t ICM_CS            = 5;    // NCS
 constexpr uint8_t ICM_SCK           = 18;   // SCLK
 constexpr uint8_t ICM_MISO          = 19;   // SDO
@@ -38,8 +38,8 @@ constexpr uint16_t ENCODER_READING_FREQUENCY = 100;
 
 // IMU
 // #define IMU_USE_INTERRUPT
-constexpr uint8_t ICM_INIT_MAX_RETRIES = 5;
-constexpr uint16_t ICM_INIT_FAILED_DELAY_MS = 1000;
+constexpr uint8_t ICM_INIT_MAX_RETRIES = 15;
+constexpr uint16_t ICM_INIT_FAILED_DELAY_MS = 2000;
 
 // Task priorities
 constexpr uint8_t BALANCING_CONTROLLER_TASK_PRIORITY = 5;
