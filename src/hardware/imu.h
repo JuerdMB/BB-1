@@ -23,7 +23,7 @@ public:
     IMU_INIT_ERROR init();
     IMU_READ_ERROR retrieveRawData(RawIMUdata &dataContainer);
     void updateFilteredOrientation(RawIMUdata &rawIMUdata, Orientation &currentOrientation);
-    void publishFilteredOrientation(Orientation &currentOrientation);
+    bool publishFilteredOrientation(Orientation &currentOrientation);
 
 private:
     Adafruit_ICM20948 icm_;
