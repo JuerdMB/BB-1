@@ -12,10 +12,10 @@ constexpr BaseType_t MAIN_CORE = 0; // This core does all the heavy lifting
 constexpr BaseType_t COMM_CORE = 1; // This core takes care of less time sensitive work
 
 // ESP32 GPIO Pins
-constexpr uint8_t MOTOR_LEFT_A      = 36;
-constexpr uint8_t MOTOR_LEFT_B      = 39;
-constexpr uint8_t MOTOR_RIGHT_A     = 34;
-constexpr uint8_t MOTOR_RIGHT_B     = 35;
+constexpr uint8_t MOTOR_LEFT_A      = 32;
+constexpr uint8_t MOTOR_LEFT_B      = 33;
+constexpr uint8_t MOTOR_RIGHT_A     = 25;
+constexpr uint8_t MOTOR_RIGHT_B     = 26;
 constexpr uint8_t ICM_CS            = 5;    // NCS
 constexpr uint8_t ICM_SCK           = 18;   // SCLK
 constexpr uint8_t ICM_MISO          = 19;   // SDO

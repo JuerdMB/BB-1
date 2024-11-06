@@ -12,10 +12,17 @@ IMU::IMU() : icm_(Adafruit_ICM20948()), previousOrientation_(Orientation()), las
 
 IMU_INIT_ERROR IMU::init()
 {
-    uint8_t retry_count = 0;
-    bool inited = false;
+
+    if(!GPIO_IS_VALID_GPIO(ICM_CS), !GPIO_IS_VALID_GPIO(ICM_SCK), !GPIO_IS_VALID_GPIO(ICM_MISO), !GPIO_IS_VALID_GPIO(ICM_MOSI), !GPIO_IS_VALID_GPIO(ICM_INTERRUPT))
+    {
+        LOG_ERROR("Invalid input pins set for IMU: %d [cs], %d [sck], %d [miso], %d [mosi], %d [int]", ICM_CS, ICM_SCK, ICM_MISO, ICM_MOSI, ICM_INTERRUPT);
+        return IMU_GPIO_INCORRECT_OUTPUT_GPIO;
+    }
 
     // Retry initialization until success or max retries exceeded
+    uint8_t retry_count = 0;
+    bool inited = false;
+    
     while (retry_count < ICM_INIT_MAX_RETRIES && !inited)
     {
         // Attempt to init sensor
@@ -33,7 +40,6 @@ IMU_INIT_ERROR IMU::init()
         vTaskDelay(ICM_INIT_FAILED_DELAY_MS / portTICK_PERIOD_MS);
     }
 
-    // Check final status
     if (!inited)
     {
         LOG_ERROR("IMU - IMU initialization failed after %d attempts", ICM_INIT_MAX_RETRIES);
