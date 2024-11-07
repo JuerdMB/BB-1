@@ -1,15 +1,13 @@
 #include "pid_controller.h"
 #include "utility/Logger.h"
 
-PID::PID(float kP, float kI, float kD): kP_(kP), kI_(kI), kD_(kD)
+template <typename T>
+PID<T>::PID(float kP, float kI, float kD): kP_(kP), kI_(kI), kD_(kD)
 {
 }
 
-PID::PID(): kP_(0.f), kI_(0.f), kD_(0.f)
-{
-}
-
-bool PID::setGains(float kP, float kI, float kD)
+template <typename T>
+bool PID<T>::setGains(float kP, float kI, float kD)
 {
     if (kP >= 0.f && kI >= 0.f && kD >= 0.f)
     {
@@ -25,7 +23,9 @@ bool PID::setGains(float kP, float kI, float kD)
     return false;
 }
 
-float PID::compute(float input, float setPoint)
+template <typename T>
+float PID<T>::compute(T input, T setPoint)
 {
-    return 0.f;
+    T result;
+    return T;
 }

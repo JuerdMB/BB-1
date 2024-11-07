@@ -1,12 +1,12 @@
 #pragma once
 
+template <typename T>
 class PID
 {
 public:
     PID(float kP, float kI, float kD);
-    PID();
     bool setGains(float kP, float kI, float kD);
-    float compute(float input, float setPoint);
+    float compute(T input, T setPoint);
 
 private:
     float kP_;
