@@ -10,13 +10,13 @@ void motionControllerTask(void *pvParameters)
     LOG_DEBUG("MotionControllerTask - Setting up MotionControllerTask.");
 
     // Setup PIDs
-    PID pid_balance(1.0f, 0.0f, 1.0f);
-    PID pid_heading(1.0f, 0.0f, 1.0f);
-    PID pid_speed(1.0f, 0.0f, 1.0f);
+    PID<int> pid_balance(1.0f, 0.0f, 1.0f);
+    PID<float> pid_heading(1.0f, 0.0f, 1.0f);
+    PID<float> pid_speed(1.0f, 0.0f, 1.0f);
 
     // Setup and initialize Motion Controller
     MotionController motionController;
-    
+
     MotionControllerError success = MOTION_CONTROLLER_SETUP_FAILED;
     uint8_t attempts = 0;
     while (success != MOTION_CONTROLLER_SETUP_SUCCESS)
