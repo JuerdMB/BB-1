@@ -36,11 +36,13 @@ float PID<T>::compute(T input, T setPoint)
     T result;
 
     // If PID constraints are set, constrain result to min-max
-    if(constrained_){
+    if(constrained_ && (result < constrained_min_ || result > constrained_max_)){
+        T result_old = result;
         result = constrain(result, constrained_min_, constrained_max_);
+        LOG_DEBUG("PID output values out of bounds: %d, constraining to %d", result, result_old);
     }
 
-    return T;
+    return result;
 }
 
 template <typename T>

@@ -10,7 +10,7 @@ void motionControllerTask(void *pvParameters)
     LOG_DEBUG("MotionControllerTask - Setting up MotionControllerTask.");
 
     // Setup PIDs
-    PID<int> pid_balance(1.0f, 0.0f, 1.0f);
+    PID<int> pid_balance(1.0f, 0.0f, 1.0f, MOTORS_MIN_SPEED, MOTORS_MAX_SPEED);
     PID<float> pid_heading(1.0f, 0.0f, 1.0f);
     PID<float> pid_speed(1.0f, 0.0f, 1.0f);
 
