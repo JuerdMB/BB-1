@@ -1,6 +1,10 @@
 #include "pid_controller.h"
 #include "utility/Logger.h"
 
+PID::PID(float kP, float kI, float kD): kP_(kP), kI_(kI), kD_(kD)
+{
+}
+
 PID::PID(): kP_(0.f), kI_(0.f), kD_(0.f)
 {
 }

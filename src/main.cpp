@@ -65,7 +65,7 @@ void setup()
 
     xTaskCreatePinnedToCore(
         loggerTask,
-        "Diagnostics Task",
+        "Logger Task",
         TASK_STACK_SIZE,
         nullptr,
         LOGGER_TASK_PRIORITY,
